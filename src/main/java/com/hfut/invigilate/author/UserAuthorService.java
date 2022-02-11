@@ -10,6 +10,7 @@ import com.hfut.invigilate.service.IUserRoleService;
 import com.hfut.invigilate.service.IUserService;
 import com.landao.guardian.annotations.system.GuardianService;
 import com.landao.guardian.core.TokenService;
+import com.landao.guardian.util.GuardianUtils;
 import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
@@ -28,11 +29,13 @@ public class UserAuthorService extends TokenService<UserTokenBean,Integer> {
     @Override
     public Set<String> getRoles() {
         Set<RoleEnum> roles = iUserRoleService.getRoles(getUserId());
-        return enum2String(roles);
+        return GuardianUtils.enumToString(roles);
     }
 
-    public static <T extends Enum<?>> Set<String> enum2String(Set<T> roles){
-        return roles.stream().map(Enum::name).map(String::toLowerCase).collect(Collectors.toSet());
+    public Integer getDepartmentId(){
+        User user = iUserService.lambdaQuery()
+                .eq(User::getWorkId, getUserId()).one();
+        return user.getDepartmentId();
     }
 
     public LoginInfoVO login(Integer workId, String password) {

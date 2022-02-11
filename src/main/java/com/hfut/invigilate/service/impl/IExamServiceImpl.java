@@ -1,8 +1,10 @@
 package com.hfut.invigilate.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.hfut.invigilate.entity.Exam;
 import com.hfut.invigilate.mapper.ExamMapper;
 import com.hfut.invigilate.model.commen.PageDTO;
+import com.hfut.invigilate.model.exam.ExamAssignVO;
 import com.hfut.invigilate.model.exam.ExamPageQueryDTO;
 import com.hfut.invigilate.model.exam.ExamTeachersVO;
 import com.hfut.invigilate.service.IExamService;
@@ -21,6 +23,12 @@ import java.util.List;
  */
 @Service
 public class IExamServiceImpl extends ServiceImpl<ExamMapper, Exam> implements IExamService {
+
+
+    @Override
+    public void listRequiredAssignExam(IPage<ExamAssignVO> iPage, Integer departmentId){
+        baseMapper.listAssignVO(iPage,departmentId);
+    }
 
     @Override
     public void checkTimeConflict(Exam exam){

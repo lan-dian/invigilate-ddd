@@ -89,4 +89,31 @@
         </where>
     </select>
 
+    <select id="listAssignVO" resultType="com.hfut.invigilate.model.exam.ExamAssignVO">
+        select *
+        from (select e.code as exam_code,
+        e.name,
+        date,
+        start_time,
+        end_time,
+        e.teacher_num required_teacher_num,
+        e.teacher_name,
+        address,
+        d.name as department,
+        money,
+        count(i.exam_code) as indeed_teacher_num
+        from exam e
+        inner join department d on e.department_id = d.id
+        left join invigilate i on e.code = i.exam_code
+        <where>
+            e.date &gt;= now()
+            <if test="departmentId!=null">
+                and e.department_id=#{departmentId}
+            </if>
+        </where>
+        group by e.code) E
+        where E.required_teacher_num > E.indeed_teacher_num
+        order by e.date,e.start_time
+    </select>
+
 </mapper>

@@ -10,6 +10,9 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 // import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import javax.servlet.http.HttpSession;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Configuration
 @EnableSwagger2WebMvc
@@ -22,7 +25,10 @@ public class SwaggerConfig {
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.hfut.invigilate.controller"))//基础包名
                 .paths(PathSelectors.any())
-                .build();
+                .build()
+                .directModelSubstitute(LocalDate.class,String.class)
+                .directModelSubstitute(LocalDateTime.class,String.class)
+                .directModelSubstitute(LocalTime.class,String.class);
     }
 
 }

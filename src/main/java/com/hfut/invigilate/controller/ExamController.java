@@ -3,27 +3,19 @@ package com.hfut.invigilate.controller;
 import cn.afterturn.easypoi.excel.ExcelImportUtil;
 import cn.afterturn.easypoi.excel.entity.ImportParams;
 import com.hfut.invigilate.author.RoleConst;
+import com.hfut.invigilate.author.UserAuthorService;
 import com.hfut.invigilate.business.ExamService;
-import com.hfut.invigilate.entity.Department;
 import com.hfut.invigilate.model.commen.CommonResult;
 import com.hfut.invigilate.model.commen.PageDTO;
-import com.hfut.invigilate.model.exam.ExamConflict;
-import com.hfut.invigilate.model.exam.ExamExcel;
-import com.hfut.invigilate.model.exam.ExamPageQueryDTO;
-import com.hfut.invigilate.model.exam.ExamTeachersVO;
-import com.hfut.invigilate.service.IDepartmentService;
+import com.hfut.invigilate.model.exam.*;
 import com.landao.guardian.annotations.author.RequiredRole;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
-import lombok.Data;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Api(tags = "考试管理")
 @RestController
@@ -35,6 +27,37 @@ public class ExamController {
 
     @Resource
     ExamService examService;
+
+    @Resource
+    UserAuthorService userAuthorService;
+
+
+    @ApiOperation("获取未分配人员的考试")
+    @RequiredRole(RoleConst.admin)
+    @GetMapping("/un_assigned")
+    public CommonResult<PageDTO<ExamAssignVO>> listUnAssigned(@RequestParam(defaultValue = "1") Integer page,
+                                                              @RequestParam(defaultValue = "15") Integer limit){
+        CommonResult<PageDTO<ExamAssignVO>> result=new CommonResult<>();
+
+
+        PageDTO<ExamAssignVO> examAssignDTOPageDTO = examService.listRequiredAssignExam(page, limit, null);
+
+        return result.body(examAssignDTOPageDTO);
+    }
+
+    @RequiredRole(RoleConst.manager)
+    @ApiOperation(value = "获取自己部门未分配的考试",notes = "二级管理员使用")
+    @GetMapping("/un_assigned/department")
+    public CommonResult<DepartmentExamAssignVO> getDepartmentUnAssignedExam(){
+        CommonResult<DepartmentExamAssignVO> result=new CommonResult<>();
+
+        Integer departmentId = userAuthorService.getDepartmentId();
+
+        DepartmentExamAssignVO departmentUnAssignedExam = examService.getDepartmentUnAssignedExam(departmentId);
+
+        return result.body(departmentUnAssignedExam);
+    }
+
 
     @RequiredRole(RoleConst.admin)
     @PostMapping("/upload/excel")
@@ -71,6 +94,7 @@ public class ExamController {
         iDepartmentService.saveBatch(departments);*/
     }
 
+    // @RequiredLogin
     @PostMapping("/page")
     @ApiOperation("考试信息,分页查询")
     public CommonResult<PageDTO<ExamTeachersVO>> page(@RequestParam(defaultValue = "1") Integer page,
