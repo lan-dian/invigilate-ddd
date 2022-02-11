@@ -6,8 +6,11 @@ import com.hfut.invigilate.author.RoleConst;
 import com.hfut.invigilate.business.ExamService;
 import com.hfut.invigilate.entity.Department;
 import com.hfut.invigilate.model.commen.CommonResult;
+import com.hfut.invigilate.model.commen.PageDTO;
 import com.hfut.invigilate.model.exam.ExamConflict;
 import com.hfut.invigilate.model.exam.ExamExcel;
+import com.hfut.invigilate.model.exam.ExamPageQueryDTO;
+import com.hfut.invigilate.model.exam.ExamTeachersVO;
 import com.hfut.invigilate.service.IDepartmentService;
 import com.landao.guardian.annotations.author.RequiredRole;
 import io.swagger.annotations.Api;
@@ -15,10 +18,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.Data;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -69,6 +69,25 @@ public class ExamController {
                 .collect(Collectors.toList());
 
         iDepartmentService.saveBatch(departments);*/
+    }
+
+    @PostMapping("/page")
+    @ApiOperation("考试信息,分页查询")
+    public CommonResult<PageDTO<ExamTeachersVO>> page(@RequestParam(defaultValue = "1") Integer page,
+                                                      @RequestParam(defaultValue = "15") Integer limit,
+                                                      @RequestBody(required = false) ExamPageQueryDTO query){
+        CommonResult<PageDTO<ExamTeachersVO>> result=new CommonResult<>();
+
+        if(query!=null){
+            if(query.getStartDate()!=null && query.getEndDate()!=null
+                    && query.getStartDate().isAfter(query.getEndDate())){
+                return result.err("开始日期不能晚与结束日期");
+            }
+        }
+
+        PageDTO<ExamTeachersVO> iPage = examService.page(page, limit, query);
+        return result.body(iPage);
+
     }
 
 
