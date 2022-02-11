@@ -1,5 +1,6 @@
 package com.hfut.invigilate.business.impl;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hfut.invigilate.business.ExamService;
 import com.hfut.invigilate.entity.Config;
 import com.hfut.invigilate.entity.Department;
@@ -47,7 +48,7 @@ public class ExamServiceImpl implements ExamService {
 
     @Override
     public PageDTO<ExamTeachersVO> page(Integer page, Integer limit, ExamPageQueryDTO query) {
-        return null;
+        return iExamService.page(page, limit, query);
     }
 
     @Override

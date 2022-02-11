@@ -2,6 +2,9 @@ package com.hfut.invigilate.service.impl;
 
 import com.hfut.invigilate.entity.Exam;
 import com.hfut.invigilate.mapper.ExamMapper;
+import com.hfut.invigilate.model.commen.PageDTO;
+import com.hfut.invigilate.model.exam.ExamPageQueryDTO;
+import com.hfut.invigilate.model.exam.ExamTeachersVO;
 import com.hfut.invigilate.service.IExamService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
@@ -31,6 +34,13 @@ public class IExamServiceImpl extends ServiceImpl<ExamMapper, Exam> implements I
         for (Exam originExam : exams) {
             originExam.checkTimeConflict(exam);
         }
+    }
+
+    @Override
+    public PageDTO<ExamTeachersVO> page(Integer page, Integer limit, ExamPageQueryDTO query){
+        List<ExamTeachersVO> examTeachersVOS = this.baseMapper.page((page - 1) * limit, limit, query);
+        Long n = this.baseMapper.count(query);
+        return PageDTO.build(n,examTeachersVOS);
     }
 
 }

@@ -15,13 +15,9 @@ public class UserVO {
     private String name;
 
     @ApiModelProperty("工号")
-    private String workId;
+    private Integer workId;
 
     @ApiModelProperty("电话")
     private String telephone;
-
-    @ApiModelProperty("学院")
-    private String college;
-
 
 }

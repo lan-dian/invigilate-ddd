@@ -2,4 +2,91 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hfut.invigilate.mapper.ExamMapper">
 
+    <resultMap id="ExamTeacherVO" autoMapping="true"
+               type="com.hfut.invigilate.model.exam.ExamTeachersVO">
+        <id property="examCode" column="exam_code"/>
+        <collection property="teachers" autoMapping="true" columnPrefix="user_"
+                    ofType="com.hfut.invigilate.model.user.UserVO">
+            <id property="workId" column="work_id"/>
+        </collection>
+    </resultMap>
+
+    <select id="page" resultMap="ExamTeacherVO">
+        select E.code as exam_code,
+        E.name,
+        E.date,
+        E.start_time,
+        E.end_time ,
+        E.create_time,
+        E.update_time,
+        E.class_description,
+        E.teacher_name,
+        E.address,
+        E.student_num,
+        E.teacher_num,
+        E.money,
+        E.d_name as department,
+        U.name as user_name,
+        U.work_id as user_work_id,
+        U.telephone as user_telephone,
+        JK.code as user_invigilate_code
+        from (select exam.*, department.name as d_name
+        from exam
+        inner join department on exam.department_id = department.id
+        left join invigilate on exam.code = invigilate.exam_code
+        left join user on invigilate.work_id = user.work_id
+        <where>
+            <if test="query.code!=null">
+                and exam.code=#{query.code}
+            </if>
+            <if test="query.examName!=null">
+                and exam.name like "%"#{query.examName}"%"
+            </if>
+            <if test="query.startDate!=null">
+                and exam.date &gt;= #{query.startDate}
+            </if>
+            <if test="query.endDate!=null">
+                and exam.date &lt;= #{query.endDate}
+            </if>
+            <if test="query.teacherName!=null">
+                and user.name like "%"#{query.teacherName}"%"
+            </if>
+            <if test="query.workId!=null">
+                and user.work_id like "%"#{query.workId}"%"
+            </if>
+        </where>
+        limit #{pos},#{limit}) E
+        inner join department on E.department_id = department.id
+        left join invigilate JK on E.code = JK.exam_code
+        left join user U on JK.work_id = U.work_id
+    </select>
+
+    <select id="count" resultType="java.lang.Long">
+        select count(distinct exam.code)
+        from exam
+        inner join department on exam.department_id = department.id
+        left join invigilate on exam.code = invigilate.exam_code
+        left join user on invigilate.work_id = user.work_id
+        <where>
+            <if test="query.code!=null">
+                and exam.code=#{query.code}
+            </if>
+            <if test="query.examName!=null">
+                and exam.name like "%"#{query.examName}"%"
+            </if>
+            <if test="query.startDate!=null">
+                and exam.date &gt;= #{query.startDate}
+            </if>
+            <if test="query.endDate!=null">
+                and exam.date &lt;= #{query.endDate}
+            </if>
+            <if test="query.teacherName!=null">
+                and user.name like "%"#{query.teacherName}"%"
+            </if>
+            <if test="query.workId!=null">
+                and user.work_id like "%"#{query.workId}"%"
+            </if>
+        </where>
+    </select>
+
 </mapper>
