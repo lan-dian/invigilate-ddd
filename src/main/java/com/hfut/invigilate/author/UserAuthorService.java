@@ -1,27 +1,23 @@
 package com.hfut.invigilate.author;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.hfut.invigilate.entity.User;
-import com.hfut.invigilate.entity.UserRole;
 import com.hfut.invigilate.model.exception.BusinessException;
 import com.hfut.invigilate.model.user.LoginInfoVO;
 import com.hfut.invigilate.model.user.RoleEnum;
 import com.hfut.invigilate.service.IUserRoleService;
-import com.hfut.invigilate.service.IUserService;
+import com.hfut.invigilate.service.UserService;
 import com.landao.guardian.annotations.system.GuardianService;
 import com.landao.guardian.core.TokenService;
 import com.landao.guardian.util.GuardianUtils;
-import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @GuardianService
 public class UserAuthorService extends TokenService<UserTokenBean,Integer> {
 
     @Resource
-    IUserService iUserService;
+    UserService userService;
 
     @Resource
     IUserRoleService iUserRoleService;
@@ -33,13 +29,13 @@ public class UserAuthorService extends TokenService<UserTokenBean,Integer> {
     }
 
     public Integer getDepartmentId(){
-        User user = iUserService.lambdaQuery()
+        User user = userService.lambdaQuery()
                 .eq(User::getWorkId, getUserId()).one();
         return user.getDepartmentId();
     }
 
     public LoginInfoVO login(Integer workId, String password) {
-        User user = iUserService.lambdaQuery().eq(User::getWorkId, workId).one();
+        User user = userService.lambdaQuery().eq(User::getWorkId, workId).one();
         if(user==null){
             throw new BusinessException("用户不存在");
         }

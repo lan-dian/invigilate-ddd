@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hfut.invigilate.mapper.UserMapper">
+
+    <select id="listUserDepartmentVO" resultType="com.hfut.invigilate.model.user.UserDepartmentVO">
+        select work_id,
+               u.name,
+               telephone,
+               d.name as department,
+               (select count(*) from invigilate i
+                   <where>
+                       i.work_id=u.work_id
+                        <if test="startDate!=null">
+                            and i.create_time &gt;= #{startDate}
+                        </if>
+                   </where>
+                   ) as invigilate_num
+        from user u
+                 inner join department d on u.department_id = d.id
+        <where>
+            <if test="departmentId!=null">
+                and u.department_id = #{departmentId}
+            </if>
+        </where>
+    </select>
+</mapper>

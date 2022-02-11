@@ -46,7 +46,7 @@ public class ExamController {
     }
 
     @RequiredRole(RoleConst.manager)
-    @ApiOperation(value = "获取自己部门未分配的考试",notes = "二级管理员使用")
+    @ApiOperation(value = "获取自己部门未分配的考试",notes = "二级管理员使用,获取自己部门成员的接口在/用户管理中")
     @GetMapping("/un_assigned/department")
     public CommonResult<DepartmentExamAssignVO> getDepartmentUnAssignedExam(){
         CommonResult<DepartmentExamAssignVO> result=new CommonResult<>();
