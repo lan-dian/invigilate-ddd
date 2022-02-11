@@ -60,10 +60,6 @@ public class GlobalExceptionHandler {
             result.err(e.getMessage());
         }
 
-        if(!RequestLogDTO.isLogged()){
-
-        }
-
         //处理日志
         RequestLogDTO requestLogDTO = RequestLogDTO.endLog(result);
         RequestLog requestLog = RequestLog.convert(requestLogDTO);

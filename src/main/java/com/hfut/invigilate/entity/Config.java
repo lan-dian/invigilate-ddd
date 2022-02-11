@@ -29,13 +29,13 @@ public class Config implements Serializable {
     private Long id;
 
     @ApiModelProperty(value = "键")
-    private String key;
+    private String name;
 
     @ApiModelProperty(value = "值")
     private String value;
 
     @ApiModelProperty(value = "描述")
-    private String name;
+    private String description;
 
 
 }

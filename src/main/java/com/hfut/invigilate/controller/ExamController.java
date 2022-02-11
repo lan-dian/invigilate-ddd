@@ -11,6 +11,7 @@ import com.hfut.invigilate.model.exam.ExamExcel;
 import com.hfut.invigilate.service.IDepartmentService;
 import com.landao.guardian.annotations.author.RequiredRole;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.Data;
 import org.springframework.stereotype.Controller;
@@ -38,6 +39,7 @@ public class ExamController {
     @RequiredRole(RoleConst.admin)
     @PostMapping("/upload/excel")
     @ApiOperation(value = "管理员上传考试文件",notes = "返回code:-1,需要展示错误列表")
+    // @ApiImplicitParam(name = "file", value = "上传的文件（excel）", required = true, dataType = "__File")
     public CommonResult<List<ExamConflict>> uploadExcel(@RequestParam MultipartFile file) {
         CommonResult<List<ExamConflict>> result=new CommonResult<>();
         if (file.isEmpty()) {

@@ -3,6 +3,9 @@ package com.hfut.invigilate.service;
 import com.hfut.invigilate.entity.Exam;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 /**
  * <p>
  * 考试 服务类
@@ -12,5 +15,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2022-02-10
  */
 public interface IExamService extends IService<Exam> {
+
+    void checkTimeConflict(Exam exam);
 
 }

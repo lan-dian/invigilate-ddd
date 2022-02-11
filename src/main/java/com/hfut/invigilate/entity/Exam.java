@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.hfut.invigilate.model.exam.ExamBO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hfut.invigilate.model.exam.ExamExcel;
 import com.hfut.invigilate.utils.CodeUtils;
 import io.swagger.annotations.ApiModel;
@@ -89,9 +89,22 @@ public class Exam implements Serializable {
 
     public static final Pattern dateTimePattern = Pattern.compile("(\\d+年\\d+月(\\d+)日) (\\d+:\\d+)~(\\d+:\\d+)");
 
+    public static final Pattern addressPattern = Pattern.compile("(.*?) \\((\\d+)\\)");
+
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日");
 
     private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
+    public void checkTimeConflict(Exam exam){
+        if(startTime.isBefore(exam.endTime) && endTime.isAfter(exam.startTime)){
+            throw new RuntimeException("与其他考试时间冲突!!! "+getSimpleDescription());
+        }
+    }
+
+    @JsonIgnore
+    public String getSimpleDescription(){
+        return "考试编码:"+code+" "+"相关信息:"+ name +" "+address+" "+date+" "+startTime+"-"+endTime;
+    }
 
     public static Exam convert(ExamExcel excel, Map<String, Integer> departments, Integer money) {
         Exam exam = new Exam();
@@ -106,17 +119,24 @@ public class Exam implements Serializable {
             log.info("日期格式不合法:"+excel.getExamTime());
             throw new IllegalArgumentException("日期格式不合法");
         }
-        exam.setTeacherNum(getTeacherNum(excel.getStudentNum()));
-        String addressWithNum = excel.getAddressWithNum();
-        int index = addressWithNum.indexOf("(");
-        exam.setAddress(addressWithNum.substring(0,index));
+
+        Matcher addressMatcher = addressPattern.matcher(excel.getAddressWithNum());
+        if(addressMatcher.find()){
+            exam.setAddress(addressMatcher.group(1));
+            exam.setStudentNum(Integer.valueOf(addressMatcher.group(2)));
+        }else {
+            log.info("考试地址格式不合法:"+excel.getAddressWithNum());
+            throw new IllegalArgumentException("考试地点(人数)不合法");
+        }
+        exam.setTeacherNum(getTeacherNum(exam.studentNum));
+
         String college = excel.getCollege();
         if(!departments.containsKey(college)){
             throw new IllegalArgumentException("学院:"+college+"不存在,请先添加");
         }
         exam.setDepartmentId(departments.get(college));
         exam.setClassDescription(excel.getClassDescription());
-        exam.setStudentNum(excel.getStudentNum());
+
         exam.setTeacherName(excel.getTeacherName());
         exam.setMoney(money);
         return exam;

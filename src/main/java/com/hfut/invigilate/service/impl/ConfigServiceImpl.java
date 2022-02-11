@@ -20,7 +20,7 @@ public class ConfigServiceImpl extends ServiceImpl<ConfigMapper, Config> impleme
 
     @Override
     public String getString(String key){
-        Config config = lambdaQuery().eq(Config::getKey, key).one();
+        Config config = lambdaQuery().eq(Config::getName, key).one();
         if(config==null){
             throw new BusinessException("没有"+key+"属性的系统配置");
         }
