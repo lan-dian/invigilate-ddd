@@ -6,9 +6,9 @@ public enum RoleEnum {
 
     @ApiModelProperty("管理员")
     Admin,
-    @ApiModelProperty("老师")
-    Teacher,
     @ApiModelProperty("二级管理")
-    Manager;
+    Manager,
+    @ApiModelProperty("老师")
+    Teacher
 
 }

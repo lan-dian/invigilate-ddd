@@ -52,5 +52,12 @@ public class User implements Serializable {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
+    /**
+     * 校验密码
+     */
+    public boolean checkPassword(String password){
+        return this.password.equals(password);
+    }
+
 
 }

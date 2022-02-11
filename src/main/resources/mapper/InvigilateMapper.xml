@@ -2,4 +2,21 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hfut.invigilate.mapper.InvigilateMapper">
 
+    <select id="listInvigilate" resultType="com.hfut.invigilate.model.invigilate.InvigilateBO">
+        select EI.name,
+        EI.date,
+        EI.start_time,
+        EI.end_time,
+        EI.address,
+        EI.student_num,
+        EI.code  as exam_code,
+        IR.exchange_num as exchange_num,
+        IR.code  as invigilate_code
+        from exam EI
+        left join invigilate IR on IR.exam_code = EI.code
+        <if test="ew!=null">
+            ${ew.customSqlSegment}
+        </if>
+    </select>
+
 </mapper>

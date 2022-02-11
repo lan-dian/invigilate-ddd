@@ -29,7 +29,7 @@ public class Department implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
+    private Integer id;
 
     @ApiModelProperty(value = "部门名称")
     private String name;
@@ -44,6 +44,14 @@ public class Department implements Serializable {
     @ApiModelProperty(value = "更新时间")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
+
+    @Deprecated
+    public static Department convert(String name){
+        Department department = new Department();
+        department.setName(name);
+        department.setType(0);
+        return department;
+    }
 
 
 }

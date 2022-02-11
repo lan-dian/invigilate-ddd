@@ -8,11 +8,20 @@ import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.hfut.invigilate.model.exam.ExamBO;
+import com.hfut.invigilate.model.exam.ExamExcel;
+import com.hfut.invigilate.utils.CodeUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * <p>
@@ -26,6 +35,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @ApiModel(value="Exam对象", description="考试")
+@Slf4j
 public class Exam implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -66,7 +76,7 @@ public class Exam implements Serializable {
     private Integer departmentId;
 
     @ApiModelProperty(value = "教学班描述")
-    private String classDescribe;
+    private String classDescription;
 
     @ApiModelProperty(value = "学生人数")
     private Integer studentNum;
@@ -76,6 +86,51 @@ public class Exam implements Serializable {
 
     @ApiModelProperty(value = "工资")
     private Integer money;
+
+    public static final Pattern dateTimePattern = Pattern.compile("(\\d+年\\d+月(\\d+)日) (\\d+:\\d+)~(\\d+:\\d+)");
+
+    private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日");
+
+    private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
+    public static Exam convert(ExamExcel excel, Map<String, Integer> departments, Integer money) {
+        Exam exam = new Exam();
+        exam.setCode(CodeUtils.getId());
+        exam.setName(excel.getName());
+        Matcher dateTimeMatcher = dateTimePattern.matcher(excel.getExamTime());
+        if (dateTimeMatcher.find()) {
+            exam.setDate(LocalDate.parse(dateTimeMatcher.group(1),dateFormatter));
+            exam.setStartTime(LocalTime.parse(dateTimeMatcher.group(3),timeFormatter));
+            exam.setEndTime(LocalTime.parse(dateTimeMatcher.group(4),timeFormatter));
+        } else {
+            log.info("日期格式不合法:"+excel.getExamTime());
+            throw new IllegalArgumentException("日期格式不合法");
+        }
+        exam.setTeacherNum(getTeacherNum(excel.getStudentNum()));
+        String addressWithNum = excel.getAddressWithNum();
+        int index = addressWithNum.indexOf("(");
+        exam.setAddress(addressWithNum.substring(0,index));
+        String college = excel.getCollege();
+        if(!departments.containsKey(college)){
+            throw new IllegalArgumentException("学院:"+college+"不存在,请先添加");
+        }
+        exam.setDepartmentId(departments.get(college));
+        exam.setClassDescription(excel.getClassDescription());
+        exam.setStudentNum(excel.getStudentNum());
+        exam.setTeacherName(excel.getTeacherName());
+        exam.setMoney(money);
+        return exam;
+    }
+
+    private static Integer getTeacherNum(Integer studentNum){
+        if(studentNum>=70){
+            return 4;
+        }else if(studentNum>=50){
+            return 3;
+        }else{
+            return 2;
+        }
+    }
 
 
 }

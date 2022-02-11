@@ -15,6 +15,6 @@ import org.springframework.stereotype.Service;
  * @since 2022-02-10
  */
 @Service
-public class ExamServiceImpl extends ServiceImpl<ExamMapper, Exam> implements IExamService {
+public class IExamServiceImpl extends ServiceImpl<ExamMapper, Exam> implements IExamService {
 
 }

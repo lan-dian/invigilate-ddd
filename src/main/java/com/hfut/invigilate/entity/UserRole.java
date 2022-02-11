@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
+
+import com.hfut.invigilate.model.user.RoleEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -35,7 +37,7 @@ public class UserRole implements Serializable {
     private Integer workId;
 
     @ApiModelProperty(value = "角色")
-    private Integer role;
+    private RoleEnum role;
 
     @ApiModelProperty(value = "创建时间")
     @TableField(fill = FieldFill.INSERT)

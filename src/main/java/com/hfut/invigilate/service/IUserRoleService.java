@@ -2,6 +2,9 @@ package com.hfut.invigilate.service;
 
 import com.hfut.invigilate.entity.UserRole;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.hfut.invigilate.model.user.RoleEnum;
+
+import java.util.Set;
 
 /**
  * <p>
@@ -13,4 +16,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IUserRoleService extends IService<UserRole> {
 
+    Set<RoleEnum> getRoles(Integer workId);
 }

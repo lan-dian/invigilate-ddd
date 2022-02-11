@@ -13,4 +13,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ConfigService extends IService<Config> {
 
+    String getString(String key);
+
+    Integer getInteger(String key);
+
+    Long getLong(String key);
 }

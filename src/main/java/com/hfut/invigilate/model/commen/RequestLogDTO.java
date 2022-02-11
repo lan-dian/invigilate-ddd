@@ -61,7 +61,24 @@ public class RequestLogDTO {
     }
 
     public static RequestLogDTO endLog(CommonResult<Object> result){
-        RequestLogDTO logDTO = getCurrent();
+        RequestLogDTO logDTO;
+        if (REQUEST_LOG.get()==null) {
+            logDTO = new RequestLogDTO();
+            logDTO.createTime = LocalDateTime.now();
+            HttpServletRequest request = HfutWebUtils.getRequest();
+            logDTO.url = request.getRequestURI();
+            logDTO.signature = "认证异常!";
+            //设置用户信息
+            if (GuardianContext.isLogin()) {
+                UserTokenBean user = GuardianContext.getUser(UserTokenBean.class);
+                logDTO.workId = user.getWorkId();
+                logDTO.name = user.getName();
+            }
+            //设置参数
+            logDTO.args="认证异常!";
+        }else {
+            logDTO = getCurrent();
+        }
         long start = logDTO.createTime.toInstant(ZoneOffset.of("+8")).toEpochMilli();
         logDTO.timeCost= Math.toIntExact(System.currentTimeMillis() - start);
         logDTO.code=result.getCode();
