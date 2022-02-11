@@ -5,6 +5,7 @@ import cn.afterturn.easypoi.excel.entity.ImportParams;
 import com.hfut.invigilate.author.RoleConst;
 import com.hfut.invigilate.author.UserAuthorService;
 import com.hfut.invigilate.business.ExamService;
+import com.hfut.invigilate.business.InvigilateService;
 import com.hfut.invigilate.model.commen.CommonResult;
 import com.hfut.invigilate.model.commen.PageDTO;
 import com.hfut.invigilate.model.exam.*;
@@ -29,7 +30,23 @@ public class ExamController {
     ExamService examService;
 
     @Resource
+    InvigilateService invigilateService;
+
+    @Resource
     UserAuthorService userAuthorService;
+
+    @RequiredRole(RoleConst.manager)
+    @ApiOperation("二级管理分配教师")
+    @PostMapping("assigned")
+    public CommonResult<Void> assignedTeacher(@RequestBody List<Integer> workerIds) {
+        CommonResult<Void> result=new CommonResult<>();
+
+        Integer departmentId = userAuthorService.getDepartmentId();
+
+        invigilateService.assignWorkIds(workerIds,departmentId);
+
+        return result.ok();
+    }
 
 
     @ApiOperation("获取未分配人员的考试")

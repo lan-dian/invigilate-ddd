@@ -51,4 +51,9 @@ public class IExamServiceImpl extends ServiceImpl<ExamMapper, Exam> implements I
         return PageDTO.build(n,examTeachersVOS);
     }
 
+    @Override
+    public List<Integer> listWorkId(ExamAssignVO examAssignVO) {
+        return baseMapper.listWorkId(examAssignVO.getDate(),examAssignVO.getStartTime(),examAssignVO.getEndTime());
+    }
+
 }

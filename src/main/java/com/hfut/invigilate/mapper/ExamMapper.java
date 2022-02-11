@@ -8,6 +8,8 @@ import com.hfut.invigilate.model.exam.ExamPageQueryDTO;
 import com.hfut.invigilate.model.exam.ExamTeachersVO;
 import org.apache.ibatis.annotations.Param;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 /**
@@ -25,5 +27,7 @@ public interface ExamMapper extends BaseMapper<Exam> {
     Long count(@Param("query") ExamPageQueryDTO query);
 
     IPage<ExamAssignVO> listAssignVO(IPage<ExamAssignVO> iPage, @Param("departmentId") Integer departmentId);
+
+    List<Integer> listWorkId(@Param("date") LocalDate date, @Param("startTime") LocalTime startTime, @Param("endTime") LocalTime endTime);
 
 }

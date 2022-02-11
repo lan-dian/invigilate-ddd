@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
+
+import com.hfut.invigilate.utils.CodeUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -53,6 +55,16 @@ public class Invigilate implements Serializable {
 
     @ApiModelProperty(value = "交换信息")
     private String msg;
+
+    public static Invigilate convert(Long examCode,Integer workId){
+        Invigilate invigilate = new Invigilate();
+        invigilate.setWorkId(workId);
+        invigilate.setExamCode(examCode);
+        invigilate.setExchangeNum(0);
+        invigilate.setCode(CodeUtils.getId());
+        invigilate.setMsg("");
+        return invigilate;
+    }
 
 
 }

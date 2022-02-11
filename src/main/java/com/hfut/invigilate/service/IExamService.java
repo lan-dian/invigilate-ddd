@@ -7,6 +7,9 @@ import com.hfut.invigilate.model.commen.PageDTO;
 import com.hfut.invigilate.model.exam.ExamAssignVO;
 import com.hfut.invigilate.model.exam.ExamPageQueryDTO;
 import com.hfut.invigilate.model.exam.ExamTeachersVO;
+import io.swagger.models.auth.In;
+
+import java.util.List;
 
 /**
  * <p>
@@ -23,4 +26,6 @@ public interface IExamService extends IService<Exam> {
     void checkTimeConflict(Exam exam);
 
     PageDTO<ExamTeachersVO> page(Integer page, Integer limit, ExamPageQueryDTO query);
+
+    List<Integer> listWorkId(ExamAssignVO examAssignVO);
 }
