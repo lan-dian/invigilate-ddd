@@ -5,11 +5,11 @@ import com.hfut.invigilate.author.UserAuthorService;
 import com.hfut.invigilate.model.commen.CommonResult;
 import com.hfut.invigilate.model.consts.DatePattern;
 import com.hfut.invigilate.model.exam.ExamTeachersVO;
-import com.hfut.invigilate.model.exam.ExamVO;
 import com.hfut.invigilate.model.exchange.WantToBeExchangeInvigilate;
 import com.hfut.invigilate.model.invigilate.TeacherInvigilateVO;
 import com.hfut.invigilate.service.ExamService;
 import com.hfut.invigilate.service.InvigilateService;
+import com.landao.checker.annotations.Check;
 import com.landao.guardian.annotations.author.RequiredLogin;
 import com.landao.guardian.annotations.author.RequiredRole;
 import io.swagger.annotations.Api;
@@ -40,11 +40,11 @@ public class TeacherController {
     @PostMapping("/v2/invigilate/")
     @ApiOperation(value = "获取监考")
     public CommonResult<List<TeacherInvigilateVO>> getMyInvigilate(@RequestParam(required = false) @DateTimeFormat(pattern = DatePattern.DATE) LocalDate startDate,
-                                                                   @RequestParam(required = false) @DateTimeFormat(pattern = DatePattern.DATE) LocalDate endDate){
-        CommonResult<List<TeacherInvigilateVO>> result=new CommonResult<>();
+                                                                   @RequestParam(required = false) @DateTimeFormat(pattern = DatePattern.DATE) LocalDate endDate) {
+        CommonResult<List<TeacherInvigilateVO>> result = new CommonResult<>();
 
-        if (startDate!=null && endDate!=null){
-            if(endDate.isBefore(startDate)){
+        if (startDate != null && endDate != null) {
+            if (endDate.isBefore(startDate)) {
                 return result.err("开始时间不能晚于结束时间");
             }
         }
@@ -59,8 +59,8 @@ public class TeacherController {
     @RequiredRole(RoleConst.teacher)
     @GetMapping("/my")
     @ApiOperation("查看我发起的调换申请")
-    public CommonResult<List<WantToBeExchangeInvigilate>> listMyExchange(){
-        CommonResult<List<WantToBeExchangeInvigilate>> result=new CommonResult<>();
+    public CommonResult<List<WantToBeExchangeInvigilate>> listMyExchange() {
+        CommonResult<List<WantToBeExchangeInvigilate>> result = new CommonResult<>();
         Integer workId = userAuthorService.getUserId();
 
         List<WantToBeExchangeInvigilate> wantToBeExchangeInvigilates = invigilateService.listWantToBeExchangeInvigilate(workId);
@@ -70,15 +70,38 @@ public class TeacherController {
     @RequiredLogin
     @GetMapping("/exam")
     @ApiOperation("得到考试的详细信息")
-    public CommonResult<ExamTeachersVO> getExam(@RequestParam Long examCode){
-        CommonResult<ExamTeachersVO> result=new CommonResult<>();
+    public CommonResult<ExamTeachersVO> getExam(@RequestParam Long examCode) {
+        CommonResult<ExamTeachersVO> result = new CommonResult<>();
 
         ExamTeachersVO examInfo = examService.getExamTeachersVO(examCode);
-        if (examInfo==null){
+        if (examInfo == null) {
             return result.err("考试不存在");
         }
 
         return result.body(examInfo);
+    }
+
+    @RequiredLogin
+    @PostMapping("/password")
+    @ApiOperation(value = "修改密码", notes = "首次登陆修改密码,不用传递初始密码,之后修改需要传递")
+    public CommonResult<Void> changePassword(@RequestParam(defaultValue = "123456")
+                                             @Check(name = "旧密码", max = 32)
+                                                     String password,
+                                             @RequestParam
+                                             @Check(name = "新密码", max = 32)
+                                                     String newPassword) {
+        CommonResult<Void> result = new CommonResult<>();
+
+        if ("123456".equals(newPassword)) {
+            return result.err("新密码不能为初始密码");
+        }
+        if (newPassword.equals(password)) {
+            return result.err("新密码和原始密码不能相同");
+        }
+
+        boolean change = userAuthorService.changePassword(password, newPassword);
+
+        return result.ok(change,"原密码错误");
     }
 
 }

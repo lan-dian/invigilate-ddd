@@ -9,6 +9,7 @@ import com.hfut.invigilate.service.UserService;
 import com.landao.guardian.annotations.system.GuardianService;
 import com.landao.guardian.core.TokenService;
 import com.landao.guardian.util.GuardianUtils;
+import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
 import java.util.Set;
@@ -26,6 +27,18 @@ public class UserAuthorService extends TokenService<UserTokenBean,Integer> {
     public Set<String> getRoles() {
         Set<RoleEnum> roles = userRoleService.getRoles(getUserId());
         return GuardianUtils.enumToString(roles);
+    }
+
+    public boolean changePassword(String oldPassword, String newPassword){
+        boolean update = userService.lambdaUpdate()
+                .set(User::getPassword, DigestUtils.md5DigestAsHex(newPassword.getBytes()))
+                .eq(User::getWorkId, getUserId())
+                .eq(User::getPassword, DigestUtils.md5DigestAsHex(oldPassword.getBytes()))
+                .update();
+        if(update){
+            logout();
+        }
+        return update;
     }
 
     public Integer getDepartmentId(){
