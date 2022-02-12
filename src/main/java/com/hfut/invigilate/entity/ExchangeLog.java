@@ -8,8 +8,10 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
@@ -21,10 +23,9 @@ import lombok.experimental.Accessors;
  * @since 2022-02-10
  */
 @Data
-@EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@ApiModel(value="ExchangeRecord对象", description="交换记录")
-public class ExchangeRecord implements Serializable {
+@ApiModel(value="ExchangeLog对象", description="交换记录")
+public class ExchangeLog implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

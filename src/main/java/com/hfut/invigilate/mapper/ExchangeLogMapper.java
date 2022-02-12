@@ -1,6 +1,6 @@
 package com.hfut.invigilate.mapper;
 
-import com.hfut.invigilate.entity.ExchangeRecord;
+import com.hfut.invigilate.entity.ExchangeLog;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author 常珂洁
  * @since 2022-02-10
  */
-public interface ExchangeRecordMapper extends BaseMapper<ExchangeRecord> {
+public interface ExchangeLogMapper extends BaseMapper<ExchangeLog> {
 
 }

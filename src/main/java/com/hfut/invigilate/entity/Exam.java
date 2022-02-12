@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hfut.invigilate.model.exam.ExamExcel;
+import com.hfut.invigilate.model.exception.BusinessException;
 import com.hfut.invigilate.utils.CodeUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -86,6 +87,36 @@ public class Exam implements Serializable {
 
     @ApiModelProperty(value = "工资")
     private Integer money;
+
+
+    public void startExchangeAble(Integer minute){
+        if(isTimeOut()){
+            throw new BusinessException("考试已经过期!");
+        }
+        //可能正在考试或者处于考试前
+        LocalDateTime deadline = LocalDateTime.now().plusMinutes(minute);
+        if(deadline.isAfter(LocalDateTime.of(date,startTime))) {
+            throw new BusinessException("考试前"+minute+"分钟禁止交换考试");
+        }
+    }
+
+    /**
+     * 是否过期(考试已经结束
+     */
+    @JsonIgnore
+    public boolean isTimeOut(){
+        LocalDate today = LocalDate.now();
+        LocalTime time = LocalTime.now();
+        return date.isBefore(today) || (date.isEqual(today) && endTime.isBefore(time));
+    }
+
+    @JsonIgnore
+    public boolean isStarted(){
+        LocalDate today = LocalDate.now();
+        LocalTime time = LocalTime.now();
+        return date.isEqual(today) && startTime.isBefore(time) && endTime.isAfter(time);
+    }
+
 
     public void checkTimeConflict(Exam exam){
         if(startTime.isBefore(exam.endTime) && endTime.isAfter(exam.startTime)){

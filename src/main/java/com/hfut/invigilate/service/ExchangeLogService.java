@@ -1,6 +1,6 @@
 package com.hfut.invigilate.service;
 
-import com.hfut.invigilate.entity.ExchangeRecord;
+import com.hfut.invigilate.entity.ExchangeLog;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author 常珂洁
  * @since 2022-02-10
  */
-public interface ExchangeRecordService extends IService<ExchangeRecord> {
+public interface ExchangeLogService extends IService<ExchangeLog> {
 
 }

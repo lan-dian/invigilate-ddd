@@ -23,7 +23,6 @@ import java.util.List;
 @RequestMapping("/admin/exam")
 public class ExamController {
 
-
     @Resource
     ExamService examService;
 
