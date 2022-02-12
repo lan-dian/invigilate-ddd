@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.hfut.invigilate.entity.Invigilate;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.hfut.invigilate.model.exchange.WantToBeExchangeInvigilate;
 import com.hfut.invigilate.model.invigilate.InvigilateBO;
 import org.apache.ibatis.annotations.Param;
 
@@ -20,5 +21,7 @@ import java.util.List;
 public interface InvigilateMapper extends BaseMapper<Invigilate> {
 
     List<InvigilateBO> listInvigilate(@Param(Constants.WRAPPER) QueryWrapper<Object> query);
+
+    List<WantToBeExchangeInvigilate> listWantToBeExchangeInvigilate(@Param("workId") Integer workId);
 
 }

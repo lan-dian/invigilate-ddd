@@ -2,6 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hfut.invigilate.mapper.InvigilateMapper">
 
+    <resultMap id="ExamVO" type="com.hfut.invigilate.model.exam.ExamVO" autoMapping="true">
+        <id property="examCode" column="code"/>
+    </resultMap>
+
     <select id="listInvigilate" resultType="com.hfut.invigilate.model.invigilate.InvigilateBO">
         select EI.name,
         EI.date,
@@ -9,14 +13,48 @@
         EI.end_time,
         EI.address,
         EI.student_num,
-        EI.code  as exam_code,
+        EI.code as exam_code,
         IR.exchange_num as exchange_num,
-        IR.code  as invigilate_code
+        IR.code as invigilate_code
         from exam EI
         left join invigilate IR on IR.exam_code = EI.code
         <if test="ew!=null">
             ${ew.customSqlSegment}
         </if>
+    </select>
+
+    <resultMap id="WantToBeExchangeInvigilate" autoMapping="true"
+               type="com.hfut.invigilate.model.exchange.WantToBeExchangeInvigilate">
+        <id property="invigilateCode" column="invigilate_code"/>
+        <association property="exam" resultMap="ExamVO" columnPrefix="exam_">
+<!--            <id property="examCode" column="code"/>-->
+        </association>
+
+    </resultMap>
+
+    <select id="listWantToBeExchangeInvigilate"
+            resultMap="WantToBeExchangeInvigilate">
+        select i.code              as invigilate_code,
+               i.exchange_num,
+               i.msg,
+               e.code              as exam_code,
+               e.address           as exam_address,
+               e.date              as exam_date,
+               e.start_time        as exam_start_time,
+               e.end_time          as exam_end_time,
+               e.name              as exam_name,
+               e.student_num       as exam_student_num,
+               d.name              as exam_department,
+               e.teacher_num       as exam_teacher_num,
+               e.address           as exam_address,
+               e.class_description as exam_class_description,
+               e.teacher_name      as exam_teacher_name,
+               e.money             as exam_money
+        from invigilate i
+                 inner join exam e on i.exam_code = e.code
+                 inner join department d on e.department_id = d.id
+        where i.work_id = #{workId}
+          and i.exchange_num &gt;= 0
     </select>
 
 </mapper>

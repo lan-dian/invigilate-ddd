@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hfut.invigilate.entity.Invigilate;
 import com.hfut.invigilate.mapper.InvigilateMapper;
+import com.hfut.invigilate.model.exchange.WantToBeExchangeInvigilate;
 import com.hfut.invigilate.model.invigilate.InvigilateBO;
 import com.hfut.invigilate.model.invigilate.TeacherInvigilateVO;
 import com.hfut.invigilate.service.InvigilateService;
@@ -46,6 +47,13 @@ public class InvigilateServiceImpl extends ServiceImpl<InvigilateMapper, Invigil
         List<InvigilateBO> invigilates = baseMapper.listInvigilate(query);
 
         return invigilates.stream().map(E->TeacherInvigilateVO.convert(E,now)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<WantToBeExchangeInvigilate> listWantToBeExchangeInvigilate(Integer workId) {
+        List<WantToBeExchangeInvigilate> wantToBeExchangeInvigilates = baseMapper.listWantToBeExchangeInvigilate(workId);
+        wantToBeExchangeInvigilates.forEach(WantToBeExchangeInvigilate::confirmState);
+        return wantToBeExchangeInvigilates;
     }
 
 }

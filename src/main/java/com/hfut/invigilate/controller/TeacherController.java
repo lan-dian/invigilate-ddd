@@ -4,16 +4,14 @@ import com.hfut.invigilate.author.RoleConst;
 import com.hfut.invigilate.author.UserAuthorService;
 import com.hfut.invigilate.model.commen.CommonResult;
 import com.hfut.invigilate.model.consts.DatePattern;
+import com.hfut.invigilate.model.exchange.WantToBeExchangeInvigilate;
 import com.hfut.invigilate.model.invigilate.TeacherInvigilateVO;
 import com.hfut.invigilate.service.InvigilateService;
 import com.landao.guardian.annotations.author.RequiredRole;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.time.LocalDate;
@@ -49,6 +47,16 @@ public class TeacherController {
         List<TeacherInvigilateVO> invigilate = invigilateService.listInvigilate(workId, startDate, endDate);
         return result.body(invigilate);
 
+    }
+
+    @GetMapping("/my")
+    @ApiOperation("查看我发起的调换申请")
+    public CommonResult<List<WantToBeExchangeInvigilate>> listMyExchange(){
+        CommonResult<List<WantToBeExchangeInvigilate>> result=new CommonResult<>();
+        Integer workId = userAuthorService.getUserId();
+
+        List<WantToBeExchangeInvigilate> wantToBeExchangeInvigilates = invigilateService.listWantToBeExchangeInvigilate(workId);
+        return result.body(wantToBeExchangeInvigilates);
     }
 
 }
