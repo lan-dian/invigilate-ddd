@@ -4,9 +4,13 @@ import com.hfut.invigilate.author.RoleConst;
 import com.hfut.invigilate.author.UserAuthorService;
 import com.hfut.invigilate.model.commen.CommonResult;
 import com.hfut.invigilate.model.consts.DatePattern;
+import com.hfut.invigilate.model.exam.ExamTeachersVO;
+import com.hfut.invigilate.model.exam.ExamVO;
 import com.hfut.invigilate.model.exchange.WantToBeExchangeInvigilate;
 import com.hfut.invigilate.model.invigilate.TeacherInvigilateVO;
+import com.hfut.invigilate.service.ExamService;
 import com.hfut.invigilate.service.InvigilateService;
+import com.landao.guardian.annotations.author.RequiredLogin;
 import com.landao.guardian.annotations.author.RequiredRole;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -27,6 +31,9 @@ public class TeacherController {
 
     @Resource
     InvigilateService invigilateService;
+
+    @Resource
+    ExamService examService;
 
 
     @RequiredRole(RoleConst.teacher)
@@ -49,6 +56,7 @@ public class TeacherController {
 
     }
 
+    @RequiredRole(RoleConst.teacher)
     @GetMapping("/my")
     @ApiOperation("查看我发起的调换申请")
     public CommonResult<List<WantToBeExchangeInvigilate>> listMyExchange(){
@@ -57,6 +65,20 @@ public class TeacherController {
 
         List<WantToBeExchangeInvigilate> wantToBeExchangeInvigilates = invigilateService.listWantToBeExchangeInvigilate(workId);
         return result.body(wantToBeExchangeInvigilates);
+    }
+
+    @RequiredLogin
+    @GetMapping("/exam")
+    @ApiOperation("得到考试的详细信息")
+    public CommonResult<ExamTeachersVO> getExam(@RequestParam Long examCode){
+        CommonResult<ExamTeachersVO> result=new CommonResult<>();
+
+        ExamTeachersVO examInfo = examService.getExamTeachersVO(examCode);
+        if (examInfo==null){
+            return result.err("考试不存在");
+        }
+
+        return result.body(examInfo);
     }
 
 }

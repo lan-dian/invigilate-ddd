@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hfut.invigilate.mapper.ExamMapper">
 
-    <resultMap id="ExamTeacherVO" autoMapping="true"
+    <resultMap id="ExamTeachersVO" autoMapping="true"
                type="com.hfut.invigilate.model.exam.ExamTeachersVO">
         <id property="examCode" column="exam_code"/>
         <collection property="teachers" autoMapping="true" columnPrefix="user_"
@@ -11,7 +11,7 @@
         </collection>
     </resultMap>
 
-    <select id="page" resultMap="ExamTeacherVO">
+    <select id="page" resultMap="ExamTeachersVO">
         select E.code as exam_code,
         E.name,
         E.date,
@@ -128,6 +128,32 @@
         from exam e
         inner join invigilate i on e.code = i.exam_code
         where e.date=#{date} and e.start_time &lt;= #{startTime} and e.end_time &gt;= #{endTime} and i.work_id=#{workId}
+    </select>
+
+    <select id="getExamTeachersVO" resultMap="ExamTeachersVO">
+        select e.code as exam_code,
+               e.name,
+               e.date,
+               e.start_time,
+               e.end_time ,
+               e.create_time,
+               e.update_time,
+               e.class_description,
+               e.teacher_name,
+               e.address,
+               e.student_num,
+               e.teacher_num,
+               e.money,
+               d.name as department,
+               U.name as user_name,
+               U.work_id as user_work_id,
+               U.telephone as user_telephone,
+               i.code as user_invigilate_code
+        from exam e
+                 inner join department d on e.department_id = d.id
+                 left join invigilate i on e.code = i.exam_code
+                 left join user u on i.work_id = u.work_id
+        where e.code=#{examCode}
     </select>
 
 </mapper>

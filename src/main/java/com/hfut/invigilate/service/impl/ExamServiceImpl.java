@@ -48,6 +48,11 @@ public class ExamServiceImpl extends ServiceImpl<ExamMapper, Exam> implements Ex
     ConfigService configService;
 
     @Override
+    public ExamTeachersVO getExamTeachersVO(Long examCode){
+        return baseMapper.getExamTeachersVO(examCode);
+    }
+
+    @Override
     public List<Exam> listConflictExam(Exam exam,Integer workId){
         return baseMapper.listConflictExam(exam.getDate(), exam.getStartTime(), exam.getEndTime(), workId);
     }

@@ -32,4 +32,6 @@ public interface ExamMapper extends BaseMapper<Exam> {
 
     List<Exam> listConflictExam(@Param("date") LocalDate date, @Param("startTime") LocalTime startTime, @Param("endTime") LocalTime endTime, @Param("workId") Integer workId);
 
+    ExamTeachersVO getExamTeachersVO(@Param("examCode") Long examCode);
+
 }

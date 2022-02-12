@@ -21,6 +21,8 @@ public interface ExamService extends IService<Exam> {
 
     void checkTimeConflict(Exam exam);
 
+    ExamTeachersVO getExamTeachersVO(Long examCode);
+
     List<Exam> listConflictExam(Exam exam, Integer workId);
 
     Exam getByCode(Long code);
