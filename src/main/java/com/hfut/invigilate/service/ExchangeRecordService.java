@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author 常珂洁
  * @since 2022-02-10
  */
-public interface IExchangeRecordService extends IService<ExchangeRecord> {
+public interface ExchangeRecordService extends IService<ExchangeRecord> {
 
 }

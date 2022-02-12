@@ -14,7 +14,7 @@ import java.util.Set;
  * @author 常珂洁
  * @since 2022-02-10
  */
-public interface IUserRoleService extends IService<UserRole> {
+public interface UserRoleService extends IService<UserRole> {
 
     Set<RoleEnum> getRoles(Integer workId);
 }

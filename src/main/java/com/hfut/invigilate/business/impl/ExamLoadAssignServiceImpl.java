@@ -1,104 +1,58 @@
 package com.hfut.invigilate.business.impl;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.hfut.invigilate.business.ExamService;
+import com.hfut.invigilate.business.ExamLoadAssignService;
 import com.hfut.invigilate.entity.Department;
 import com.hfut.invigilate.entity.Exam;
-import com.hfut.invigilate.model.commen.PageDTO;
+import com.hfut.invigilate.entity.Invigilate;
 import com.hfut.invigilate.model.consts.ConfigConst;
-import com.hfut.invigilate.model.exam.*;
+import com.hfut.invigilate.model.exam.DepartmentExamAssignVO;
+import com.hfut.invigilate.model.exam.ExamAssignVO;
+import com.hfut.invigilate.model.exam.ExamConflict;
+import com.hfut.invigilate.model.exam.ExamExcel;
+import com.hfut.invigilate.model.exception.BusinessException;
 import com.hfut.invigilate.service.ConfigService;
-import com.hfut.invigilate.service.IDepartmentService;
-import com.hfut.invigilate.service.IExamService;
+import com.hfut.invigilate.service.DepartmentService;
+import com.hfut.invigilate.service.ExamService;
+import com.hfut.invigilate.service.InvigilateService;
 import com.hfut.invigilate.utils.CodeUtils;
 import com.hfut.invigilate.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.BagUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-@Slf4j
+/**
+ * 考试上传分配核心业务类
+ */
 @Service
-public class ExamServiceImpl implements ExamService {
+@Slf4j
+public class ExamLoadAssignServiceImpl implements ExamLoadAssignService {
 
     @Resource
-    IDepartmentService iDepartmentService;
+    InvigilateService invigilateService;
 
     @Resource
-    IExamService iExamService;
+    ExamService examService;
+
+    @Resource
+    DepartmentService departmentService;
 
     @Resource
     ConfigService configService;
 
     @Override
-    public DepartmentExamAssignVO getDepartmentUnAssignedExam(Integer departmentId){
-        DepartmentExamAssignVO departmentExamAssignVO = new DepartmentExamAssignVO();
-        IPage<ExamAssignVO> iPage=new Page<>(1,Integer.MAX_VALUE);
-        iExamService.listRequiredAssignExam(iPage, departmentId);
-        List<ExamAssignVO> examAssignVOS = iPage.getRecords();
-
-        int sum=0;
-        int index=0;
-        LocalDate date=null;
-        LocalTime startTime=null;
-        LocalTime endTime=null;
-        for (ExamAssignVO examAssignVO : examAssignVOS) {
-            if(date==null || examAssignVO.getDate().equals(date)){
-                if(startTime==null || examAssignVO.getStartTime().equals(startTime)){
-                    if(endTime== null || examAssignVO.getEndTime().equals(endTime)){
-                        index++;
-                        sum+=examAssignVO.getRequiredTeacherNum()-examAssignVO.getIndeedTeacherNum();
-                    }else {
-                        break;
-                    }
-                }else {
-                    break;
-                }
-            }else {
-                break;
-            }
-            date=examAssignVO.getDate();
-            startTime=examAssignVO.getStartTime();
-            endTime=examAssignVO.getEndTime();
-        }
-
-        departmentExamAssignVO.setNeedTeacherNum(sum);
-        departmentExamAssignVO.setExams(examAssignVOS.subList(0,index));
-
-        return departmentExamAssignVO;
-    }
-
-    @Override
-    public PageDTO<ExamAssignVO> listRequiredAssignExam(Integer page, Integer limit, Integer departmentId) {
-        IPage<ExamAssignVO> iPage=new Page<>(page,limit);
-        iExamService.listRequiredAssignExam(iPage, departmentId);
-        return PageDTO.build(iPage);
-    }
-
-
-    @Override
-    public PageDTO<ExamTeachersVO> page(Integer page, Integer limit, ExamPageQueryDTO query) {
-        return iExamService.page(page, limit, query);
-    }
-
-    @Override
     public List<ExamConflict> loadExam(List<ExamExcel> examExcels) {
         List<ExamConflict> conflicts = new ArrayList<>();
 
-        Map<String, Integer> departments = iDepartmentService.list().stream()
+        Map<String, Integer> departments = departmentService.list().stream()
                 .collect(Collectors.toMap(Department::getName, Department::getId));
 
         Integer money = configService.getInteger(ConfigConst.money);
@@ -108,8 +62,8 @@ public class ExamServiceImpl implements ExamService {
         for (int i = 0; i < exams.size(); i++) {
             Exam exam = exams.get(i);
             try {
-                iExamService.checkTimeConflict(exam);
-                boolean save = iExamService.save(exam);
+                examService.checkTimeConflict(exam);
+                boolean save = examService.save(exam);
                 if (!save) {
                     log.error("考试保存失败:{}:{}", exam.getName(), JsonUtils.parse(exam));
                     throw new RuntimeException("保存失败");
@@ -202,6 +156,49 @@ public class ExamServiceImpl implements ExamService {
             return 2;
         }
     }
+
+
+    @Override
+    @Transactional(rollbackFor = Throwable.class)
+    public void assignWorkIds(List<Integer> workIds, Integer departmentId){
+        DepartmentExamAssignVO departmentUnAssignedExam = examService.getDepartmentUnAssignedExam(departmentId);
+
+        Integer needTeacherNum = departmentUnAssignedExam.getNeedTeacherNum();
+        if(needTeacherNum==0){
+            throw new BusinessException("已经没有可被分配的监考了");
+        }
+
+        if(workIds.size()<needTeacherNum){
+            throw new BusinessException("供分配的老师少于需求的人数");
+        }
+
+        List<ExamAssignVO> exams = departmentUnAssignedExam.getExams();
+        ExamAssignVO examExample = exams.get(0);
+
+        List<Integer> banWorkIds = examService.listWorkId(examExample);
+
+        workIds.removeAll(banWorkIds);
+        if(workIds.size()<needTeacherNum){
+            throw new BusinessException("由于"+banWorkIds+"时间冲突,需要额外添加"+(needTeacherNum-workIds.size())+"人");
+        }
+
+        Collections.shuffle(workIds);//打乱顺序
+
+        int index=0;
+        for (ExamAssignVO exam : exams) {
+            Long examCode = exam.getExamCode();
+            int required = exam.getRequiredTeacherNum() - exam.getIndeedTeacherNum();
+            for (int i = 0; i < required; i++) {
+                Invigilate invigilate = Invigilate.convert(examCode, workIds.get(index));
+                index++;
+                boolean save = invigilateService.save(invigilate);
+                if (!save) {
+                    throw new BusinessException("未知原因,分派失败");
+                }
+            }
+        }
+    }
+
 
 
 }

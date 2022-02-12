@@ -15,7 +15,7 @@ import java.util.List;
  * @author 常珂洁
  * @since 2022-02-10
  */
-public interface IInvigilateService extends IService<Invigilate> {
+public interface InvigilateService extends IService<Invigilate> {
 
     List<TeacherInvigilateVO> listInvigilate(Integer workId, LocalDate startDate, LocalDate endDate);
 

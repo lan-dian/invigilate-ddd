@@ -5,7 +5,7 @@ import com.hfut.invigilate.author.UserAuthorService;
 import com.hfut.invigilate.model.commen.CommonResult;
 import com.hfut.invigilate.model.consts.DatePattern;
 import com.hfut.invigilate.model.invigilate.TeacherInvigilateVO;
-import com.hfut.invigilate.service.IInvigilateService;
+import com.hfut.invigilate.service.InvigilateService;
 import com.landao.guardian.annotations.author.RequiredRole;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -28,7 +28,7 @@ public class TeacherController {
     UserAuthorService userAuthorService;
 
     @Resource
-    IInvigilateService iInvigilateService;
+    InvigilateService invigilateService;
 
 
     @RequiredRole(RoleConst.teacher)
@@ -46,7 +46,7 @@ public class TeacherController {
 
         Integer workId = userAuthorService.getUserId();
 
-        List<TeacherInvigilateVO> invigilate = iInvigilateService.listInvigilate(workId, startDate, endDate);
+        List<TeacherInvigilateVO> invigilate = invigilateService.listInvigilate(workId, startDate, endDate);
         return result.body(invigilate);
 
     }

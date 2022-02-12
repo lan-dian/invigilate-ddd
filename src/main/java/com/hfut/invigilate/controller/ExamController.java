@@ -4,11 +4,11 @@ import cn.afterturn.easypoi.excel.ExcelImportUtil;
 import cn.afterturn.easypoi.excel.entity.ImportParams;
 import com.hfut.invigilate.author.RoleConst;
 import com.hfut.invigilate.author.UserAuthorService;
-import com.hfut.invigilate.business.ExamService;
-import com.hfut.invigilate.business.InvigilateService;
+import com.hfut.invigilate.business.ExamLoadAssignService;
 import com.hfut.invigilate.model.commen.CommonResult;
 import com.hfut.invigilate.model.commen.PageDTO;
 import com.hfut.invigilate.model.exam.*;
+import com.hfut.invigilate.service.ExamService;
 import com.landao.guardian.annotations.author.RequiredRole;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -23,14 +23,12 @@ import java.util.List;
 @RequestMapping("/admin/exam")
 public class ExamController {
 
-    /*@Resource
-    IDepartmentService iDepartmentService;*/
 
     @Resource
     ExamService examService;
 
     @Resource
-    InvigilateService invigilateService;
+    ExamLoadAssignService examLoadAssignService;
 
     @Resource
     UserAuthorService userAuthorService;
@@ -43,7 +41,7 @@ public class ExamController {
 
         Integer departmentId = userAuthorService.getDepartmentId();
 
-        invigilateService.assignWorkIds(workerIds,departmentId);
+        examLoadAssignService.assignWorkIds(workerIds,departmentId);
 
         return result.ok();
     }
@@ -95,7 +93,7 @@ public class ExamController {
             return result.err("文件读取失败");
         }
 
-        List<ExamConflict> conflicts = examService.loadExam(examExcels);
+        List<ExamConflict> conflicts = examLoadAssignService.loadExam(examExcels);
         if(conflicts.isEmpty()){
             return result.ok("成功导入"+examExcels.size()+"条考试信息");
         }else {

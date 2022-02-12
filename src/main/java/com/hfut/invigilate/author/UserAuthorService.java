@@ -4,7 +4,7 @@ import com.hfut.invigilate.entity.User;
 import com.hfut.invigilate.model.exception.BusinessException;
 import com.hfut.invigilate.model.user.LoginInfoVO;
 import com.hfut.invigilate.model.user.RoleEnum;
-import com.hfut.invigilate.service.IUserRoleService;
+import com.hfut.invigilate.service.UserRoleService;
 import com.hfut.invigilate.service.UserService;
 import com.landao.guardian.annotations.system.GuardianService;
 import com.landao.guardian.core.TokenService;
@@ -20,11 +20,11 @@ public class UserAuthorService extends TokenService<UserTokenBean,Integer> {
     UserService userService;
 
     @Resource
-    IUserRoleService iUserRoleService;
+    UserRoleService userRoleService;
 
     @Override
     public Set<String> getRoles() {
-        Set<RoleEnum> roles = iUserRoleService.getRoles(getUserId());
+        Set<RoleEnum> roles = userRoleService.getRoles(getUserId());
         return GuardianUtils.enumToString(roles);
     }
 
@@ -44,7 +44,7 @@ public class UserAuthorService extends TokenService<UserTokenBean,Integer> {
             throw new BusinessException("密码错误");
         }
 
-        Set<RoleEnum> roles = iUserRoleService.getRoles(workId);
+        Set<RoleEnum> roles = userRoleService.getRoles(workId);
 
         UserTokenBean userTokenBean = UserTokenBean.convert(user);
 

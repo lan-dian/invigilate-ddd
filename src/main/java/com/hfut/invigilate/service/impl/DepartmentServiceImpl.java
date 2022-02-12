@@ -2,7 +2,7 @@ package com.hfut.invigilate.service.impl;
 
 import com.hfut.invigilate.entity.Department;
 import com.hfut.invigilate.mapper.DepartmentMapper;
-import com.hfut.invigilate.service.IDepartmentService;
+import com.hfut.invigilate.service.DepartmentService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +15,6 @@ import org.springframework.stereotype.Service;
  * @since 2022-02-10
  */
 @Service
-public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Department> implements IDepartmentService {
+public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Department> implements DepartmentService {
 
 }

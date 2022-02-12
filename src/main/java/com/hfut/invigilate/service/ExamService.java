@@ -4,9 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.hfut.invigilate.entity.Exam;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hfut.invigilate.model.commen.PageDTO;
-import com.hfut.invigilate.model.exam.ExamAssignVO;
-import com.hfut.invigilate.model.exam.ExamPageQueryDTO;
-import com.hfut.invigilate.model.exam.ExamTeachersVO;
+import com.hfut.invigilate.model.exam.*;
 import io.swagger.models.auth.In;
 
 import java.util.List;
@@ -19,11 +17,13 @@ import java.util.List;
  * @author 常珂洁
  * @since 2022-02-10
  */
-public interface IExamService extends IService<Exam> {
-
-    void listRequiredAssignExam(IPage<ExamAssignVO> iPage, Integer departmentId);
+public interface ExamService extends IService<Exam> {
 
     void checkTimeConflict(Exam exam);
+
+    DepartmentExamAssignVO getDepartmentUnAssignedExam(Integer departmentId);
+
+    PageDTO<ExamAssignVO> listRequiredAssignExam(Integer page, Integer limit, Integer departmentId);
 
     PageDTO<ExamTeachersVO> page(Integer page, Integer limit, ExamPageQueryDTO query);
 

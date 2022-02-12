@@ -4,10 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hfut.invigilate.entity.Invigilate;
 import com.hfut.invigilate.mapper.InvigilateMapper;
-import com.hfut.invigilate.model.invigilate.ExamStateEnum;
 import com.hfut.invigilate.model.invigilate.InvigilateBO;
 import com.hfut.invigilate.model.invigilate.TeacherInvigilateVO;
-import com.hfut.invigilate.service.IInvigilateService;
+import com.hfut.invigilate.service.InvigilateService;
 import com.hfut.invigilate.utils.QueryUtils;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +23,7 @@ import java.util.stream.Collectors;
  * @since 2022-02-10
  */
 @Service
-public class InvigilateServiceImpl extends ServiceImpl<InvigilateMapper, Invigilate> implements IInvigilateService {
+public class InvigilateServiceImpl extends ServiceImpl<InvigilateMapper, Invigilate> implements InvigilateService {
 
 
     @Override

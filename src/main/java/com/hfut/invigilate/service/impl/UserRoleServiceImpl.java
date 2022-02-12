@@ -3,7 +3,7 @@ package com.hfut.invigilate.service.impl;
 import com.hfut.invigilate.entity.UserRole;
 import com.hfut.invigilate.mapper.UserRoleMapper;
 import com.hfut.invigilate.model.user.RoleEnum;
-import com.hfut.invigilate.service.IUserRoleService;
+import com.hfut.invigilate.service.UserRoleService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  * @since 2022-02-10
  */
 @Service
-public class UserRoleServiceImpl extends ServiceImpl<UserRoleMapper, UserRole> implements IUserRoleService {
+public class UserRoleServiceImpl extends ServiceImpl<UserRoleMapper, UserRole> implements UserRoleService {
 
     @Override
     public Set<RoleEnum> getRoles(Integer workId){
