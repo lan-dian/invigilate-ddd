@@ -123,4 +123,11 @@
         where e.date=#{date} and e.start_time &lt;= #{startTime} and e.end_time &gt;= #{endTime}
     </select>
 
+    <select id="listConflictExam" resultType="com.hfut.invigilate.entity.Exam">
+        select e.*
+        from exam e
+        inner join invigilate i on e.code = i.exam_code
+        where e.date=#{date} and e.start_time &lt;= #{startTime} and e.end_time &gt;= #{endTime} and i.work_id=#{workId}
+    </select>
+
 </mapper>

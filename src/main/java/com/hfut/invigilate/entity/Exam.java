@@ -88,16 +88,28 @@ public class Exam implements Serializable {
     @ApiModelProperty(value = "工资")
     private Integer money;
 
+    public void replaceAble(){
+        if(!beforeStart()){
+            throw new BusinessException("不能顶替已经开始或者过期的考试");
+        }
+    }
 
     public void startExchangeAble(Integer minute){
-        if(isTimeOut()){
-            throw new BusinessException("考试已经过期!");
+        if(!beforeStart()){
+            throw new BusinessException("考试已经过期或处于进行状态!");
         }
         //可能正在考试或者处于考试前
         LocalDateTime deadline = LocalDateTime.now().plusMinutes(minute);
         if(deadline.isAfter(LocalDateTime.of(date,startTime))) {
             throw new BusinessException("考试前"+minute+"分钟禁止交换考试");
         }
+    }
+
+
+    public boolean beforeStart(){
+        LocalDate today = LocalDate.now();
+        LocalTime time = LocalTime.now();
+        return date.isAfter(today) || (date.isEqual(today) && startTime.isAfter(time));
     }
 
     /**

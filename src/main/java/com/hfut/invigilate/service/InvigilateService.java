@@ -17,6 +17,9 @@ import java.util.List;
  */
 public interface InvigilateService extends IService<Invigilate> {
 
+
+    Invigilate getByCode(Long code);
+
     List<TeacherInvigilateVO> listInvigilate(Integer workId, LocalDate startDate, LocalDate endDate);
 
 }

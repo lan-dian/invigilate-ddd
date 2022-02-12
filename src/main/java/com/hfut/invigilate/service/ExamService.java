@@ -21,6 +21,10 @@ public interface ExamService extends IService<Exam> {
 
     void checkTimeConflict(Exam exam);
 
+    List<Exam> listConflictExam(Exam exam, Integer workId);
+
+    Exam getByCode(Long code);
+
     DepartmentExamAssignVO getDepartmentUnAssignedExam(Integer departmentId);
 
     PageDTO<ExamAssignVO> listRequiredAssignExam(Integer page, Integer limit, Integer departmentId);

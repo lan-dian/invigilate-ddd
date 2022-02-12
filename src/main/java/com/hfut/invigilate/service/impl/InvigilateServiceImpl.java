@@ -27,6 +27,12 @@ public class InvigilateServiceImpl extends ServiceImpl<InvigilateMapper, Invigil
 
 
     @Override
+    public Invigilate getByCode(Long code){
+        return lambdaQuery().eq(Invigilate::getCode, code).one();
+    }
+
+
+    @Override
     public List<TeacherInvigilateVO> listInvigilate(Integer workId, LocalDate startDate, LocalDate endDate) {
         LocalDate now = LocalDate.now();
         if (startDate == null && endDate == null) {

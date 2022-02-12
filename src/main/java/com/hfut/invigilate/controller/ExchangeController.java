@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.util.List;
 
-@Api("交换相关的动作(数据都在teacher相关那里)")
+@Api(tags="交换相关的动作(数据都在teacher相关那里)")
 @RestController
 @RequestMapping("/exchange")
 @Slf4j

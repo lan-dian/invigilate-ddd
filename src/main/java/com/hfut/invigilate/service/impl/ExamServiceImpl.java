@@ -48,6 +48,16 @@ public class ExamServiceImpl extends ServiceImpl<ExamMapper, Exam> implements Ex
     ConfigService configService;
 
     @Override
+    public List<Exam> listConflictExam(Exam exam,Integer workId){
+        return baseMapper.listConflictExam(exam.getDate(), exam.getStartTime(), exam.getEndTime(), workId);
+    }
+
+    @Override
+    public Exam getByCode(Long code){
+        return lambdaQuery().eq(Exam::getCode, code).one();
+    }
+
+    @Override
     public DepartmentExamAssignVO getDepartmentUnAssignedExam(Integer departmentId){
         DepartmentExamAssignVO departmentExamAssignVO = new DepartmentExamAssignVO();
         PageDTO<ExamAssignVO> examAssignVOPageDTO = listRequiredAssignExam(1, Integer.MAX_VALUE, departmentId);

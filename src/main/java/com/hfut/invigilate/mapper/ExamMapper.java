@@ -30,4 +30,6 @@ public interface ExamMapper extends BaseMapper<Exam> {
 
     List<Integer> listWorkId(@Param("date") LocalDate date, @Param("startTime") LocalTime startTime, @Param("endTime") LocalTime endTime);
 
+    List<Exam> listConflictExam(@Param("date") LocalDate date, @Param("startTime") LocalTime startTime, @Param("endTime") LocalTime endTime, @Param("workId") Integer workId);
+
 }
