@@ -1,6 +1,6 @@
 package com.hfut.invigilate.model.exam;
 
-import com.hfut.invigilate.model.user.UserVO;
+import com.hfut.invigilate.model.user.UserInvigilateVO;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -57,7 +57,7 @@ public class ExamTeachersVO {
     private Integer money;
 
     @ApiModelProperty("监考教师")
-    private List<UserVO> teachers;
+    private List<UserInvigilateVO> teachers;
 
 
 }

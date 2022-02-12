@@ -3,6 +3,7 @@ package com.hfut.invigilate.service;
 import com.hfut.invigilate.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hfut.invigilate.model.user.UserDepartmentVO;
+import com.hfut.invigilate.model.user.UserInfoVO;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,4 +19,6 @@ import java.util.List;
 public interface UserService extends IService<User> {
 
     List<UserDepartmentVO> getDepartmentUser(Integer departmentId, LocalDate startDate);
+
+    UserInfoVO getUserInfo(Integer workId);
 }

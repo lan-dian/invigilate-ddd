@@ -7,8 +7,10 @@ import com.hfut.invigilate.model.consts.DatePattern;
 import com.hfut.invigilate.model.exam.ExamTeachersVO;
 import com.hfut.invigilate.model.exchange.WantToBeExchangeInvigilate;
 import com.hfut.invigilate.model.invigilate.TeacherInvigilateVO;
+import com.hfut.invigilate.model.user.UserInfoVO;
 import com.hfut.invigilate.service.ExamService;
 import com.hfut.invigilate.service.InvigilateService;
+import com.hfut.invigilate.service.UserService;
 import com.landao.checker.annotations.Check;
 import com.landao.guardian.annotations.author.RequiredLogin;
 import com.landao.guardian.annotations.author.RequiredRole;
@@ -34,6 +36,9 @@ public class TeacherController {
 
     @Resource
     ExamService examService;
+
+    @Resource
+    UserService userService;
 
 
     @RequiredRole(RoleConst.teacher)
@@ -102,6 +107,19 @@ public class TeacherController {
         boolean change = userAuthorService.changePassword(password, newPassword);
 
         return result.ok(change,"原密码错误");
+    }
+
+    @RequiredLogin
+    @GetMapping("/info")
+    @ApiOperation("查看自己的个人信息")
+    public CommonResult<UserInfoVO> info(){
+        CommonResult<UserInfoVO> result=new CommonResult<>();
+
+        Integer workId = userAuthorService.getUserId();
+
+        UserInfoVO userInfo=userService.getUserInfo(workId);
+
+        return result.body(userInfo);
     }
 
 }

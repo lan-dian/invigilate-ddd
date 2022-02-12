@@ -23,4 +23,14 @@
             </if>
         </where>
     </select>
+
+    <select id="getUserInfo" resultType="com.hfut.invigilate.model.user.UserInfoVO">
+        select work_id,
+               u.name,
+               telephone,
+               d.name as department
+        from user u
+                 inner join department d on u.department_id = d.id
+        where u.work_id=#{workId}
+    </select>
 </mapper>

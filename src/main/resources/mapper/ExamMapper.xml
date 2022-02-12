@@ -6,7 +6,7 @@
                type="com.hfut.invigilate.model.exam.ExamTeachersVO">
         <id property="examCode" column="exam_code"/>
         <collection property="teachers" autoMapping="true" columnPrefix="user_"
-                    ofType="com.hfut.invigilate.model.user.UserVO">
+                    ofType="com.hfut.invigilate.model.user.UserInvigilateVO">
             <id property="workId" column="work_id"/>
         </collection>
     </resultMap>
