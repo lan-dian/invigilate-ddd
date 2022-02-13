@@ -5,10 +5,12 @@ import com.hfut.invigilate.author.UserAuthorService;
 import com.hfut.invigilate.model.commen.CommonResult;
 import com.hfut.invigilate.model.consts.DatePattern;
 import com.hfut.invigilate.model.exam.ExamTeachersVO;
+import com.hfut.invigilate.model.exchange.SelfExchangeIntendVO;
 import com.hfut.invigilate.model.exchange.WantToBeExchangeInvigilate;
 import com.hfut.invigilate.model.invigilate.TeacherInvigilateVO;
 import com.hfut.invigilate.model.user.UserInfoVO;
 import com.hfut.invigilate.service.ExamService;
+import com.hfut.invigilate.service.ExchangeService;
 import com.hfut.invigilate.service.InvigilateService;
 import com.hfut.invigilate.service.UserService;
 import com.landao.checker.annotations.Check;
@@ -33,6 +35,9 @@ public class TeacherController {
 
     @Resource
     InvigilateService invigilateService;
+
+    @Resource
+    ExchangeService exchangeService;
 
     @Resource
     ExamService examService;
@@ -120,6 +125,17 @@ public class TeacherController {
         UserInfoVO userInfo=userService.getUserInfo(workId);
 
         return result.body(userInfo);
+    }
+
+    @RequiredRole(RoleConst.teacher)
+    @GetMapping("/my_intend")
+    @ApiOperation("列出我的所有交换意图")
+    public CommonResult<List<SelfExchangeIntendVO>> myIntend(){
+        CommonResult<List<SelfExchangeIntendVO>> result=new CommonResult<>();
+        Integer workId = userAuthorService.getUserId();
+
+        List<SelfExchangeIntendVO> exchangeInfoDTOS = exchangeService.listMyIntend(workId);
+        return result.body(exchangeInfoDTOS);
     }
 
 }

@@ -2,9 +2,12 @@ package com.hfut.invigilate.service.impl;
 
 import com.hfut.invigilate.entity.Exchange;
 import com.hfut.invigilate.mapper.ExchangeMapper;
+import com.hfut.invigilate.model.exchange.SelfExchangeIntendVO;
 import com.hfut.invigilate.service.ExchangeService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -17,4 +20,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class ExchangeServiceImpl extends ServiceImpl<ExchangeMapper, Exchange> implements ExchangeService {
 
+    @Override
+    public List<SelfExchangeIntendVO> listMyIntend(Integer workId) {
+        return baseMapper.listTeacherIntend(workId);
+    }
 }

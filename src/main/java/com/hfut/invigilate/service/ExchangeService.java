@@ -2,6 +2,9 @@ package com.hfut.invigilate.service;
 
 import com.hfut.invigilate.entity.Exchange;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.hfut.invigilate.model.exchange.SelfExchangeIntendVO;
+
+import java.util.List;
 
 /**
  * <p>
@@ -12,5 +15,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2022-02-10
  */
 public interface ExchangeService extends IService<Exchange> {
+
+    List<SelfExchangeIntendVO> listMyIntend(Integer workId);
 
 }

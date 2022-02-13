@@ -10,6 +10,7 @@ import com.hfut.invigilate.model.exception.BusinessException;
 import com.hfut.invigilate.model.exchange.ExchangeState;
 import com.hfut.invigilate.model.exchange.ExchangeType;
 import com.hfut.invigilate.service.*;
+import com.hfut.invigilate.utils.CodeUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -214,6 +215,7 @@ public class ExchangeCoreServiceImpl implements ExchangeCoreService {
         exchange.setResponseExamCode(responseExam.getCode());
         exchange.setResponseInvigilateCode(responseInvigilateCode);
         exchange.setState(ExchangeState.Process);
+        exchange.setCode(CodeUtils.getId());
         boolean save = exchangeService.save(exchange);
         if(save){
             boolean addExchangeNum = invigilateService.addExchangeNum(requestInvigilateCode);

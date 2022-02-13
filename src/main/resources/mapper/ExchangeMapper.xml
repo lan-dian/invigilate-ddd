@@ -1,5 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hfut.invigilate.mapper.ExchangeMapper">
+    <resultMap id="TeacherIntend" type="com.hfut.invigilate.model.exchange.SelfExchangeIntendVO">
+        <id property="exchangeCode" column="exchange_code"/>
+        <association property="self" columnPrefix="self_" autoMapping="true"/>
+        <association property="target" columnPrefix="target_" autoMapping="true"/>
+        <association property="targetTeacher" columnPrefix="teacher_" autoMapping="true"/>
+    </resultMap>
 
+    <select id="listTeacherIntend" resultMap="TeacherIntend">
+        select r.code            as exchange_code,
+               resp_e.code       as self_exam_code,
+               resp_e.money      as self_money,
+               resp_e.name       as self_name,
+               resp_e.end_time   as self_end_time,
+               resp_e.start_time as self_start_time,
+               resp_e.date       as self_date,
+               resp_e.address    as self_address,
+               req_e.start_time  as target_start_time,
+               req_e.end_time    as target_end_time,
+               req_e.date        as target_date,
+               req_e.address     as target_address,
+               req_e.code        as target_exam_code,
+               req_e.money       as target_money,
+               req_e.name        as target_name,
+               u.name            as teacher_name,
+               u.work_id         as teacher_work_id,
+               u.telephone       as teacher_telephone
+        from exchange r
+                 inner join user u on r.response_work_id = u.work_id
+                 inner join exam resp_e on resp_e.code = r.response_exam_code
+                 inner join exam req_e on req_e.code = r.request_exam_code
+        where u.work_id = #{workId}
+          and r.state = 0
+    </select>
 </mapper>

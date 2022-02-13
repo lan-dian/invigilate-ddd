@@ -62,5 +62,8 @@ public class Exchange implements Serializable {
     @ApiModelProperty(value = "交换状态")
     private ExchangeState state;
 
+    @ApiModelProperty("交换编码")
+    private Long code;
+
 
 }

@@ -82,13 +82,6 @@ public class ExchangeController {
         return CommonResult.ok(cancel);
     }
 
-    @GetMapping("/my-intend")
-    @ApiOperation("列出我的所有交换意图")
-    public CommonResult myIntend(){
-        String workId = userAuthorService.getUserId();
-
-        List<ExchangeInfoDTO> exchangeInfoDTOS = exchangeService.listMyIntend(workId);
-        return CommonResult.body(exchangeInfoDTOS);
-    }*/
+*/
 
 }
