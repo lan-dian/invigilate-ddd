@@ -4,8 +4,6 @@ import com.hfut.invigilate.author.RoleConst;
 import com.hfut.invigilate.author.UserAuthorService;
 import com.hfut.invigilate.business.ExchangeCoreService;
 import com.hfut.invigilate.model.commen.CommonResult;
-import com.hfut.invigilate.service.ExchangeService;
-import com.hfut.invigilate.service.InvigilateService;
 import com.landao.guardian.annotations.author.RequiredRole;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 @Api(tags="交换相关的动作(数据都在teacher相关那里)")
 @RestController
@@ -52,23 +49,19 @@ public class ExchangeController {
         return result.ok(replace);
     }
 
-    /*@GetMapping("/intent")
-    @ApiOperation("要和别人交换多个或一个监考")
-    public CommonResult intent( @RequestParam Long[] invigilateCodes, @RequestParam Long targetCode) {
-        String workId = userAuthorService.getUserId();
 
+    @GetMapping("/intent")
+    @ApiOperation(value = "`想`和别人交换监考")
+    public CommonResult<Void> intent(@RequestParam Long invigilateCode, @RequestParam Long targetCode) {
+        CommonResult<Void> result=new CommonResult<>();
 
-        if(invigilateCodes==null || invigilateCodes.length==0){
-            LogUtil.err("ExchangeController_intent","没有选择要调换的监考",new Object[]{workId,invigilateCodes,targetCode});
-            return CommonResult.err("请选择想要调换的监考");
-        }
+        Integer workId = userAuthorService.getUserId();
 
-        for (Long code : invigilateCodes) {
-            invigilateService.exchange(workId, code, targetCode);
-        }
-        return CommonResult.ok();
+        boolean exchange=exchangeCoreService.intend(workId, invigilateCode, targetCode);
+
+        return result.ok(exchange);
     }
-
+/*
     @GetMapping("/confirm")
     @ApiOperation("确认和哪一个进行交换")
     public CommonResult confirm(@RequestParam Long exchangeCode) {

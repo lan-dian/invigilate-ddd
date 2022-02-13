@@ -28,6 +28,12 @@ public class InvigilateServiceImpl extends ServiceImpl<InvigilateMapper, Invigil
 
 
     @Override
+    public boolean addExchangeNum(Long code){
+        return baseMapper.addExchangeNum(code) > 0;
+    }
+
+
+    @Override
     public Invigilate getByCode(Long code){
         return lambdaQuery().eq(Invigilate::getCode, code).one();
     }

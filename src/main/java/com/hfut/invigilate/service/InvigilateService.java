@@ -19,6 +19,8 @@ import java.util.List;
 public interface InvigilateService extends IService<Invigilate> {
 
 
+    boolean addExchangeNum(Long code);
+
     Invigilate getByCode(Long code);
 
     List<TeacherInvigilateVO> listInvigilate(Integer workId, LocalDate startDate, LocalDate endDate);

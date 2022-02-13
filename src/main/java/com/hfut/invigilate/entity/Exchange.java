@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
+
+import com.hfut.invigilate.model.exchange.ExchangeState;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -58,7 +60,7 @@ public class Exchange implements Serializable {
     private Long responseInvigilateCode;
 
     @ApiModelProperty(value = "交换状态")
-    private Integer state;
+    private ExchangeState state;
 
 
 }

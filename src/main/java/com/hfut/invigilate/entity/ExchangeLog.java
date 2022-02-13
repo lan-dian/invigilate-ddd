@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
 
+import com.hfut.invigilate.model.exchange.ExchangeState;
 import com.hfut.invigilate.model.exchange.ExchangeType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -50,8 +51,8 @@ public class ExchangeLog implements Serializable {
     @ApiModelProperty(value = "描述")
     private String detail;
 
-    @ApiModelProperty(value = "0:过程,1:结果,2:取消")
-    private Integer state;
+    @ApiModelProperty(value = "0:过程,1:结果")
+    private ExchangeState state;
 
     @ApiModelProperty("交换类型")
     private ExchangeType exchangeType;

@@ -24,4 +24,6 @@ public interface InvigilateMapper extends BaseMapper<Invigilate> {
 
     List<WantToBeExchangeInvigilate> listWantToBeExchangeInvigilate(@Param("workId") Integer workId);
 
+    Integer addExchangeNum(@Param("code") Long code);
+
 }

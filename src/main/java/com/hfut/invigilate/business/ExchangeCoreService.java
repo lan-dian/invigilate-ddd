@@ -6,4 +6,6 @@ public interface ExchangeCoreService {
 
     boolean replace(Integer workId, Long invigilateCode);
 
+    boolean intend(Integer workId, Long invigilateCode, Long targetCode);
+
 }
