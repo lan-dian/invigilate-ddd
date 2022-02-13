@@ -11,7 +11,7 @@ import java.time.LocalDate;
 public class ExamPageQueryDTO {
 
     @ApiModelProperty("考试编码")
-    private Long code;
+    private String code;
 
     @ApiModelProperty("考试名称")
     private String examName;
@@ -26,6 +26,6 @@ public class ExamPageQueryDTO {
     private String teacherName;
 
     @ApiModelProperty("教师工号")
-    private Integer workId;
+    private String workId;
 
 }

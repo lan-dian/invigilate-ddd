@@ -36,10 +36,10 @@
         left join invigilate on exam.code = invigilate.exam_code
         left join user on invigilate.work_id = user.work_id
         <where>
-            <if test="query.code!=null">
-                and exam.code=#{query.code}
+            <if test="query.code!=null and ''!=query.code">
+                and exam.code like "%"#{query.code}"%"
             </if>
-            <if test="query.examName!=null">
+            <if test="query.examName!=null and ''!=query.examName">
                 and exam.name like "%"#{query.examName}"%"
             </if>
             <if test="query.startDate!=null">
@@ -48,10 +48,10 @@
             <if test="query.endDate!=null">
                 and exam.date &lt;= #{query.endDate}
             </if>
-            <if test="query.teacherName!=null">
+            <if test="query.teacherName!=null and ''!=query.teacherName">
                 and user.name like "%"#{query.teacherName}"%"
             </if>
-            <if test="query.workId!=null">
+            <if test="query.workId!=null and ''!=query.workId">
                 and user.work_id like "%"#{query.workId}"%"
             </if>
         </where>
@@ -68,10 +68,10 @@
         left join invigilate on exam.code = invigilate.exam_code
         left join user on invigilate.work_id = user.work_id
         <where>
-            <if test="query.code!=null">
-                and exam.code=#{query.code}
+            <if test="query.code!=null and ''!=query.code">
+                and exam.code like "%"#{query.code}"%"
             </if>
-            <if test="query.examName!=null">
+            <if test="query.examName!=null and ''!=query.examName">
                 and exam.name like "%"#{query.examName}"%"
             </if>
             <if test="query.startDate!=null">
@@ -80,10 +80,10 @@
             <if test="query.endDate!=null">
                 and exam.date &lt;= #{query.endDate}
             </if>
-            <if test="query.teacherName!=null">
+            <if test="query.teacherName!=null and ''!=query.teacherName">
                 and user.name like "%"#{query.teacherName}"%"
             </if>
-            <if test="query.workId!=null">
+            <if test="query.workId!=null and ''!=query.workId">
                 and user.work_id like "%"#{query.workId}"%"
             </if>
         </where>

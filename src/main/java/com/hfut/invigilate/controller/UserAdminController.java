@@ -3,17 +3,17 @@ package com.hfut.invigilate.controller;
 import com.hfut.invigilate.author.RoleConst;
 import com.hfut.invigilate.author.UserAuthorService;
 import com.hfut.invigilate.model.commen.CommonResult;
+import com.hfut.invigilate.model.commen.PageDTO;
 import com.hfut.invigilate.model.consts.DatePattern;
 import com.hfut.invigilate.model.user.UserDepartmentVO;
+import com.hfut.invigilate.model.user.UserPageQueryDTO;
+import com.hfut.invigilate.model.user.UserRolesVO;
 import com.hfut.invigilate.service.UserService;
 import com.landao.guardian.annotations.author.RequiredRole;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.time.LocalDate;
@@ -49,6 +49,16 @@ public class UserAdminController {
         return result.body(departmentUsers);
     }
 
+    @RequiredRole(value ={ RoleConst.manager,RoleConst.admin})
+    @PostMapping("/page")
+    @ApiOperation("分页查询")
+    public CommonResult<PageDTO<UserRolesVO>> page(@RequestParam(defaultValue = "1") Integer page,
+                                                   @RequestParam(defaultValue = "15") Integer limit,
+                                                   @RequestBody(required = false) UserPageQueryDTO queryDTO){
+        CommonResult<PageDTO<UserRolesVO>> result=new CommonResult<>();
+        PageDTO<UserRolesVO> pageDTO = UserService.page(page, limit, queryDTO);
+        return result.body(pageDTO);
+    }
 
 
 

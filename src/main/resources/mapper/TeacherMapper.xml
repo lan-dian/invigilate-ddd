@@ -2,21 +2,87 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hfut.invigilate.mapper.UserMapper">
 
+    <resultMap id="UserRolesVO" autoMapping="true" type="com.hfut.invigilate.model.user.UserRolesVO">
+        <id property="workId" column="work_id"/>
+        <collection property="roles" ofType="com.hfut.invigilate.model.user.RoleEnum">
+            <result column="role"/>
+        </collection>
+    </resultMap>
+
+    <select id="page" resultMap="UserRolesVO">
+        select u.work_id,
+        u.id,
+        u.name,
+        u.telephone,
+        u.create_time,
+        u.update_time,
+        d.name as college,
+        r.role
+        from (select distinct user.*
+        from user
+        inner join department on user.department_id = department.id
+        inner join user_role on user.work_id = user_role.work_id
+        <where>
+            <if test="query.workId!=null and ''!=query.workId ">
+                and user.work_id like "%"#{query.workId}"%"
+            </if>
+            <if test="query.name!=null and ''!=query.name ">
+                and user.name like "%"#{query.name}"%"
+            </if>
+            <if test="query.college!=null and ''!=query.college ">
+                and department.name like "%"#{query.college}"%"
+            </if>
+            <if test="query.role!=null">
+                and user_role.role=#{query.role}
+            </if>
+            <if test="query.telephone and ''!=query.telephone ">
+                and user.tetephone like "%"#{query.telephone}"%"
+            </if>
+        </where>
+        limit #{pos},#{limit}) u
+        inner join department d on d.id = u.department_id
+        inner join user_role r on r.work_id = u.work_id
+    </select>
+
+    <select id="count" resultType="java.lang.Long">
+        select count(distinct user.work_id)
+        from user
+        inner join department on user.department_id = department.id
+        inner join user_role on user.work_id = user_role.work_id
+        <where>
+            <if test="query.workId!=null and ''!=query.workId ">
+                and user.work_id like "%"#{query.workId}"%"
+            </if>
+            <if test="query.name!=null and ''!=query.name ">
+                and user.name like "%"#{query.name}"%"
+            </if>
+            <if test="query.college!=null and ''!=query.college ">
+                and department.name like "%"#{query.college}"%"
+            </if>
+            <if test="query.role!=null">
+                and user_role.role=#{query.role}
+            </if>
+            <if test="query.telephone and ''!=query.telephone ">
+                and user.tetephone like "%"#{query.telephone}"%"
+            </if>
+        </where>
+    </select>
+
     <select id="listUserDepartmentVO" resultType="com.hfut.invigilate.model.user.UserDepartmentVO">
         select work_id,
-               u.name,
-               telephone,
-               d.name as department,
-               (select count(*) from invigilate i
-                   <where>
-                       i.work_id=u.work_id
-                        <if test="startDate!=null">
-                            and i.create_time &gt;= #{startDate}
-                        </if>
-                   </where>
-                   ) as invigilate_num
+        u.name,
+        telephone,
+        d.name as department,
+        (select count(*) from invigilate i
+        <where>
+            i.work_id=u.work_id
+            <if test="startDate!=null">
+                and i.create_time &gt;= #{startDate}
+            </if>
+        </where>
+        ) as invigilate_num
         from user u
-                 inner join department d on u.department_id = d.id
+        inner join department d on u.department_id = d.id
         <where>
             <if test="departmentId!=null">
                 and u.department_id = #{departmentId}
@@ -31,6 +97,7 @@
                d.name as department
         from user u
                  inner join department d on u.department_id = d.id
-        where u.work_id=#{workId}
+        where u.work_id = #{workId}
     </select>
+
 </mapper>
