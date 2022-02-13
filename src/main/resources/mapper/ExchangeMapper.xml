@@ -34,4 +34,36 @@
         where u.work_id = #{workId}
           and r.state = 0
     </select>
+
+    <resultMap id="IntendVO" autoMapping="true"
+               type="com.hfut.invigilate.model.exchange.IntendVO">
+        <id property="workId" column="work_id"/>
+        <collection property="exams" ofType="com.hfut.invigilate.model.exchange.IntendExamVO"
+                    autoMapping="true" columnPrefix="exam_">
+
+        </collection>
+    </resultMap>
+
+    <select id="listOtherIntend" resultMap="IntendVO">
+        select r.response_invigilate_code as exam_invigilate_code,
+               r.code                     as exam_exchange_code,
+               e.code                     as exam_exam_code,
+               e.start_time               as exam_start_time,
+               e.end_time                 as exam_end_time,
+               e.date                     as exam_date,
+               e.name                     as exam_name,
+               e.address                  as exam_address,
+               e.money                    as exam_money,
+               u.work_id                  as work_id,
+               u.name                     as name,
+               u.telephone                as telephone
+        from exchange r
+                 inner join user u on r.response_work_id = u.work_id
+                 inner join invigilate i on r.request_invigilate_code = i.code
+                 inner join exam e on i.exam_code = e.code
+        where r.request_invigilate_code = #{invigilateCode}
+          and r.state = 0
+    </select>
+
+
 </mapper>

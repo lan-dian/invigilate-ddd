@@ -2,6 +2,7 @@ package com.hfut.invigilate.service;
 
 import com.hfut.invigilate.entity.Invigilate;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.hfut.invigilate.model.exchange.IntendVO;
 import com.hfut.invigilate.model.exchange.WantToBeExchangeInvigilate;
 import com.hfut.invigilate.model.invigilate.TeacherInvigilateVO;
 
@@ -18,7 +19,6 @@ import java.util.List;
  */
 public interface InvigilateService extends IService<Invigilate> {
 
-
     boolean addExchangeNum(Long code);
 
     Invigilate getByCode(Long code);
@@ -26,4 +26,6 @@ public interface InvigilateService extends IService<Invigilate> {
     List<TeacherInvigilateVO> listInvigilate(Integer workId, LocalDate startDate, LocalDate endDate);
 
     List<WantToBeExchangeInvigilate> listWantToBeExchangeInvigilate(Integer workId);
+
+
 }

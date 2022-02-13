@@ -2,6 +2,7 @@ package com.hfut.invigilate.mapper;
 
 import com.hfut.invigilate.entity.Exchange;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.hfut.invigilate.model.exchange.IntendVO;
 import com.hfut.invigilate.model.exchange.SelfExchangeIntendVO;
 import org.apache.ibatis.annotations.Param;
 
@@ -18,5 +19,7 @@ import java.util.List;
 public interface ExchangeMapper extends BaseMapper<Exchange> {
 
     List<SelfExchangeIntendVO> listTeacherIntend(@Param("workId") Integer workId);
+
+    List<IntendVO> listOtherIntend(@Param("invigilateCode") Long invigilateCode);
 
 }

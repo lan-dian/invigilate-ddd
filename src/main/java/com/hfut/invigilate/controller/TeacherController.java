@@ -5,6 +5,7 @@ import com.hfut.invigilate.author.UserAuthorService;
 import com.hfut.invigilate.model.commen.CommonResult;
 import com.hfut.invigilate.model.consts.DatePattern;
 import com.hfut.invigilate.model.exam.ExamTeachersVO;
+import com.hfut.invigilate.model.exchange.IntendVO;
 import com.hfut.invigilate.model.exchange.SelfExchangeIntendVO;
 import com.hfut.invigilate.model.exchange.WantToBeExchangeInvigilate;
 import com.hfut.invigilate.model.invigilate.TeacherInvigilateVO;
@@ -136,6 +137,16 @@ public class TeacherController {
 
         List<SelfExchangeIntendVO> exchangeInfoDTOS = exchangeService.listMyIntend(workId);
         return result.body(exchangeInfoDTOS);
+    }
+
+    @RequiredRole(RoleConst.teacher)
+    @GetMapping("/list_intend")
+    @ApiOperation("查看待确认调换的信息(从这里选一个确认和谁调换)")
+    public CommonResult<List<IntendVO>> listIntend(@RequestParam Long invigilateCode){
+        CommonResult<List<IntendVO>> result=new CommonResult<>();
+        List<IntendVO> intendVOS = exchangeService.listOtherIntend(invigilateCode);
+
+        return result.body(intendVOS);
     }
 
 }

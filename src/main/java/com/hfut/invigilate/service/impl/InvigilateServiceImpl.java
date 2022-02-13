@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hfut.invigilate.entity.Invigilate;
 import com.hfut.invigilate.mapper.InvigilateMapper;
+import com.hfut.invigilate.model.exchange.IntendVO;
 import com.hfut.invigilate.model.exchange.WantToBeExchangeInvigilate;
 import com.hfut.invigilate.model.invigilate.InvigilateBO;
 import com.hfut.invigilate.model.invigilate.TeacherInvigilateVO;
@@ -61,5 +62,7 @@ public class InvigilateServiceImpl extends ServiceImpl<InvigilateMapper, Invigil
         wantToBeExchangeInvigilates.forEach(WantToBeExchangeInvigilate::confirmState);
         return wantToBeExchangeInvigilates;
     }
+
+
 
 }

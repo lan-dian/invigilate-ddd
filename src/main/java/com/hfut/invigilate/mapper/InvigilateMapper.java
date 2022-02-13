@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.hfut.invigilate.entity.Invigilate;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.hfut.invigilate.model.exchange.IntendVO;
 import com.hfut.invigilate.model.exchange.WantToBeExchangeInvigilate;
 import com.hfut.invigilate.model.invigilate.InvigilateBO;
 import org.apache.ibatis.annotations.Param;
