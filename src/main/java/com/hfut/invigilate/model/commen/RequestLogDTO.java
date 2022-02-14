@@ -83,7 +83,11 @@ public class RequestLogDTO {
         logDTO.timeCost= Math.toIntExact(System.currentTimeMillis() - start);
         logDTO.code=result.getCode();
         logDTO.msg=result.getMsg();
-        logDTO.data=JsonUtils.parse(result.getData());
+        String data = JsonUtils.parse(result.getData());
+        if(data.length()>60000){
+            data=data.substring(0,60000);
+        }
+        logDTO.data=data;
         HttpServletResponse response = HfutWebUtils.getResponse();
         logDTO.status= response.getStatus();
         logDTO.success= logDTO.code == 0;
