@@ -10,4 +10,6 @@ public interface ExchangeCoreService {
 
     boolean cancelIntend(Integer workId, Long exchangeCode);
 
+    boolean cancelExchange(Integer workId, Long invigilateCode);
+
 }

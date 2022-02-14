@@ -68,7 +68,7 @@ public class ExchangeController {
     }
 
     @GetMapping("/cancel_intend")
-    @ApiOperation("取消我的交换意图")
+    @ApiOperation("取消我和别人的交换意图")
     public CommonResult<Void> cancelIntent(@RequestParam Long exchangeCode){
         CommonResult<Void> result=new CommonResult<>();
 
@@ -77,6 +77,18 @@ public class ExchangeController {
         boolean cancel = exchangeCoreService.cancelIntend(workId, exchangeCode);
         return result.ok(cancel);
     }
+
+    @GetMapping("/cancel_exchange")
+    @ApiOperation("取消我发起的调换")
+    public CommonResult<Void> cancelExchange(@RequestParam Long invigilateCode){
+        CommonResult<Void> result=new CommonResult<>();
+
+        Integer workId = userAuthorService.getUserId();
+
+        boolean cancel = exchangeCoreService.cancelExchange(workId,invigilateCode);
+        return result.ok(cancel);
+    }
+
 /*
     @GetMapping("/confirm")
     @ApiOperation("确认和哪一个进行交换")
@@ -88,15 +100,7 @@ public class ExchangeController {
         return CommonResult.ok(confirm);
     }
 
-    @GetMapping("/cancel")
-    @ApiOperation("取消调换意图")
-    public CommonResult cancel(@RequestParam Long invigilateCode){
-        String workId = userAuthorService.getUserId();
 
-
-        boolean cancel = exchangeService.cancel(workId,invigilateCode);
-        return CommonResult.ok(cancel);
-    }
 
 */
 

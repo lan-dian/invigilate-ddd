@@ -1,10 +1,7 @@
 package com.hfut.invigilate.business.impl;
 
 import com.hfut.invigilate.business.ExchangeCoreService;
-import com.hfut.invigilate.entity.Exam;
-import com.hfut.invigilate.entity.Exchange;
-import com.hfut.invigilate.entity.ExchangeLog;
-import com.hfut.invigilate.entity.Invigilate;
+import com.hfut.invigilate.entity.*;
 import com.hfut.invigilate.model.consts.ConfigConst;
 import com.hfut.invigilate.model.exception.BusinessException;
 import com.hfut.invigilate.model.exchange.ExchangeState;
@@ -38,25 +35,25 @@ public class ExchangeCoreServiceImpl implements ExchangeCoreService {
 
     @Override
     @Transactional
-    public boolean cancelIntend(Integer workId, Long exchangeCode){
+    public boolean cancelIntend(Integer workId, Long exchangeCode) {
         Exchange exchange = exchangeService.lambdaQuery()
                 .eq(Exchange::getCode, exchangeCode)
                 .eq(Exchange::getResponseWorkId, workId)
                 .one();
-        if(exchange==null){
+        if (exchange == null) {
             throw new BusinessException("这不是你的合法交换编码");
         }
         //删除记录
         boolean remove = exchangeService.lambdaUpdate()
                 .eq(Exchange::getCode, exchangeCode)
                 .remove();
-        if(!remove){
+        if (!remove) {
             throw new BusinessException("交换记录删除失败");
         }
         //更新监考表
         Long requestInvigilateCode = exchange.getRequestInvigilateCode();
         boolean subExchangeNum = invigilateService.subExchangeNum(requestInvigilateCode);
-        if(!subExchangeNum){
+        if (!subExchangeNum) {
             throw new BusinessException("监考交换数量减少失败");
         }
         //记录日志
@@ -66,7 +63,59 @@ public class ExchangeCoreServiceImpl implements ExchangeCoreService {
         exchangeLog.setResponseExamCode(exchange.getResponseExamCode());
         Exam responseExam = examService.getByCode(exchange.getResponseExamCode());
         Exam requestExam = examService.getByCode(exchange.getRequestExamCode());
-        exchangeLog.setDetail("取消用自己的考试:\t"+responseExam.getSimpleDescription()+"\t和\t"+requestExam.getSimpleDescription()+"\t 进行交换");
+        exchangeLog.setDetail("取消用自己的考试:\t" + responseExam.getSimpleDescription() + "\t和\t" + requestExam.getSimpleDescription() + "\t 进行交换");
+        exchangeLog.setState(ExchangeState.Process);
+        exchangeLog.setExchangeType(ExchangeType.Cancel);
+        exchangeLogService.save(exchangeLog);
+
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public boolean cancelExchange(Integer workId, Long invigilateCode) {
+        Invigilate invigilate = invigilateService.lambdaQuery()
+                .eq(Invigilate::getWorkId, workId)
+                .eq(Invigilate::getCode, invigilateCode)
+                .one();
+        if (invigilate == null) {
+            throw new BusinessException("这不是你的合法监考");
+        }
+        boolean update = invigilateService.lambdaUpdate()
+                .set(Invigilate::getExchangeNum, -1)
+                .set(Invigilate::getMsg, "")
+                .eq(Invigilate::getCode, invigilateCode)
+                .update();
+        if (!update) {
+            throw new BusinessException("监考信息更新失败");
+        }
+        //查找所有相关的交换
+        List<Exchange> exchanges = exchangeService.lambdaQuery()
+                .eq(Exchange::getState, ExchangeState.Process)
+                .and(query -> query.eq(Exchange::getRequestInvigilateCode, invigilateCode)
+                        .or()
+                        .eq(Exchange::getResponseInvigilateCode, invigilateCode))
+                .list();
+        if (!exchanges.isEmpty()) {
+            //发送通知
+
+            //删除
+            List<Long> exchangeIds = exchanges.stream()
+                    .map(Exchange::getId)
+                    .collect(Collectors.toList());
+            boolean remove = exchangeService.removeByIds(exchangeIds);
+            if (!remove) {
+                throw new BusinessException("相关交换记录删除失败");
+            }
+        }
+
+        //记录日志
+        ExchangeLog exchangeLog = new ExchangeLog();
+        exchangeLog.setWorkId(workId);
+        exchangeLog.setRequestExamCode(invigilate.getExamCode());
+        exchangeLog.setResponseExamCode(null);
+        Exam exam = examService.getByCode(invigilate.getExamCode());
+        exchangeLog.setDetail("取消了和别人交换考试:\t"+exam.getSimpleDescription());
         exchangeLog.setState(ExchangeState.Process);
         exchangeLog.setExchangeType(ExchangeType.Cancel);
         exchangeLogService.save(exchangeLog);
@@ -162,9 +211,9 @@ public class ExchangeCoreServiceImpl implements ExchangeCoreService {
                         .or().eq(Exchange::getRequestExamCode, invigilateCode)).list();
         //todo 发送相关信息
         List<Long> ids = exchanges.stream().map(Exchange::getId).collect(Collectors.toList());
-        if(!exchanges.isEmpty()){
+        if (!exchanges.isEmpty()) {
             boolean remove = exchangeService.removeByIds(ids);
-            if(!remove){
+            if (!remove) {
                 throw new BusinessException("有交换记录删除失败");
             }
         }
@@ -176,7 +225,7 @@ public class ExchangeCoreServiceImpl implements ExchangeCoreService {
         exchangeLog.setState(ExchangeState.Result);
         exchangeLog.setExchangeType(ExchangeType.Replace);
         boolean save = exchangeLogService.save(exchangeLog);
-        if(!save){
+        if (!save) {
             throw new BusinessException("关键交换日志记录失败!");
         }
 
@@ -190,33 +239,33 @@ public class ExchangeCoreServiceImpl implements ExchangeCoreService {
                 .eq(Invigilate::getWorkId, workId)
                 .eq(Invigilate::getCode, responseInvigilateCode)
                 .one();
-        if(responseInvigilate==null){
+        if (responseInvigilate == null) {
             throw new BusinessException("这不是你的合法的监考");
         }
 
         Invigilate requestInvigilate = invigilateService.getByCode(requestInvigilateCode);
-        if(requestInvigilate==null){
+        if (requestInvigilate == null) {
             throw new BusinessException("目标监考不存在");
         }
-        if(requestInvigilate.getWorkId().equals(workId)){
+        if (requestInvigilate.getWorkId().equals(workId)) {
             throw new BusinessException("你不能和自己交换监考");
         }
-        if(requestInvigilate.getExchangeNum()<0){
+        if (requestInvigilate.getExchangeNum() < 0) {
             throw new BusinessException("目标监考不想和别人调换");
         }
 
         Long requestExamCode = requestInvigilate.getExamCode();
         Exam requestExam = examService.getByCode(requestExamCode);
-        if(!requestExam.beforeStart()){
+        if (!requestExam.beforeStart()) {
             throw new BusinessException("这场考试已经开始或者结束了!");
         }
         //看看我的考试过期了吗
         Exam responseExam = examService.getByCode(responseInvigilate.getExamCode());
-        if(!responseExam.beforeStart()){
+        if (!responseExam.beforeStart()) {
             throw new BusinessException("你的考试已经开始或者结束了");
         }
 
-        if(responseExam.getCode().equals(requestExamCode)){
+        if (responseExam.getCode().equals(requestExamCode)) {
             throw new BusinessException("你们两个在同一个考场");
         }
 
@@ -226,16 +275,16 @@ public class ExchangeCoreServiceImpl implements ExchangeCoreService {
                 .eq(Exchange::getRequestInvigilateCode, requestInvigilateCode)
                 .eq(Exchange::getResponseInvigilateCode, responseInvigilateCode)
                 .one();
-        if(hasExchange!=null){
+        if (hasExchange != null) {
             throw new BusinessException("你已经和他交换过这场考试了");
         }
 
 
         //这个考试和我的时间有冲突吗,跳过我这场考试
         List<Exam> conflictExams = examService.listConflictExam(requestExam, workId);
-        if(!conflictExams.isEmpty()){
-            conflictExams.removeIf(exam->exam.getCode().equals(responseExam.getCode()));
-            if(!conflictExams.isEmpty()){
+        if (!conflictExams.isEmpty()) {
+            conflictExams.removeIf(exam -> exam.getCode().equals(responseExam.getCode()));
+            if (!conflictExams.isEmpty()) {
                 StringBuilder sb = new StringBuilder("这场考试和您的以下考试有时间冲突:\n");
                 for (Exam conflictExam : conflictExams) {
                     sb.append(conflictExam.getSimpleDescription()).append("\n");
@@ -255,20 +304,20 @@ public class ExchangeCoreServiceImpl implements ExchangeCoreService {
         exchange.setState(ExchangeState.Process);
         exchange.setCode(CodeUtils.getId());
         boolean save = exchangeService.save(exchange);
-        if(save){
+        if (save) {
             boolean addExchangeNum = invigilateService.addExchangeNum(requestInvigilateCode);
-            if(!addExchangeNum){
+            if (!addExchangeNum) {
                 throw new BusinessException("交换数量增加失败");
             }
         }
 
-        if(save){
+        if (save) {
             //构建交换记录
             ExchangeLog exchangeLog = new ExchangeLog();
             exchangeLog.setWorkId(workId);
             exchangeLog.setRequestExamCode(requestExamCode);
             exchangeLog.setResponseExamCode(responseExam.getCode());
-            exchangeLog.setDetail("想要以 "+responseExam.getSimpleDescription()+" 和 "+requestExam.getSimpleDescription()+" 进行交换");
+            exchangeLog.setDetail("想要以 " + responseExam.getSimpleDescription() + " 和 " + requestExam.getSimpleDescription() + " 进行交换");
             exchangeLog.setState(ExchangeState.Process);
             exchangeLog.setExchangeType(ExchangeType.Intend);
             exchangeLogService.save(exchangeLog);
