@@ -27,4 +27,6 @@ public interface InvigilateMapper extends BaseMapper<Invigilate> {
 
     Integer addExchangeNum(@Param("code") Long code);
 
+    Integer subExchangeNum(@Param("code") Long code);
+
 }

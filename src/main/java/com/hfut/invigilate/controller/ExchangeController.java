@@ -4,6 +4,8 @@ import com.hfut.invigilate.author.RoleConst;
 import com.hfut.invigilate.author.UserAuthorService;
 import com.hfut.invigilate.business.ExchangeCoreService;
 import com.hfut.invigilate.model.commen.CommonResult;
+import com.hfut.invigilate.model.exchange.ExchangeState;
+import com.hfut.invigilate.service.ExchangeService;
 import com.landao.guardian.annotations.author.RequiredRole;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,6 +28,9 @@ public class ExchangeController {
 
     @Resource
     UserAuthorService userAuthorService;
+
+    @Resource
+    ExchangeService exchangeService;
 
     @RequiredRole(RoleConst.teacher)
     @GetMapping("/start")
@@ -60,6 +65,17 @@ public class ExchangeController {
         boolean exchange=exchangeCoreService.intend(workId, invigilateCode, targetCode);
 
         return result.ok(exchange);
+    }
+
+    @GetMapping("/cancel_intend")
+    @ApiOperation("取消我的交换意图")
+    public CommonResult<Void> cancelIntent(@RequestParam Long exchangeCode){
+        CommonResult<Void> result=new CommonResult<>();
+
+        Integer workId = userAuthorService.getUserId();
+
+        boolean cancel = exchangeCoreService.cancelIntend(workId, exchangeCode);
+        return result.ok(cancel);
     }
 /*
     @GetMapping("/confirm")

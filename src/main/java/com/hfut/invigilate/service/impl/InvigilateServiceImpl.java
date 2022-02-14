@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hfut.invigilate.entity.Invigilate;
 import com.hfut.invigilate.mapper.InvigilateMapper;
-import com.hfut.invigilate.model.exchange.IntendVO;
 import com.hfut.invigilate.model.exchange.WantToBeExchangeInvigilate;
 import com.hfut.invigilate.model.invigilate.InvigilateBO;
 import com.hfut.invigilate.model.invigilate.TeacherInvigilateVO;
@@ -29,13 +28,18 @@ public class InvigilateServiceImpl extends ServiceImpl<InvigilateMapper, Invigil
 
 
     @Override
-    public boolean addExchangeNum(Long code){
+    public boolean addExchangeNum(Long code) {
         return baseMapper.addExchangeNum(code) > 0;
+    }
+
+    @Override
+    public boolean subExchangeNum(Long code) {
+        return baseMapper.subExchangeNum(code) > 0;
     }
 
 
     @Override
-    public Invigilate getByCode(Long code){
+    public Invigilate getByCode(Long code) {
         return lambdaQuery().eq(Invigilate::getCode, code).one();
     }
 
@@ -53,7 +57,7 @@ public class InvigilateServiceImpl extends ServiceImpl<InvigilateMapper, Invigil
 
         List<InvigilateBO> invigilates = baseMapper.listInvigilate(query);
 
-        return invigilates.stream().map(E->TeacherInvigilateVO.convert(E,now)).collect(Collectors.toList());
+        return invigilates.stream().map(E -> TeacherInvigilateVO.convert(E, now)).collect(Collectors.toList());
     }
 
     @Override
@@ -62,7 +66,6 @@ public class InvigilateServiceImpl extends ServiceImpl<InvigilateMapper, Invigil
         wantToBeExchangeInvigilates.forEach(WantToBeExchangeInvigilate::confirmState);
         return wantToBeExchangeInvigilates;
     }
-
 
 
 }

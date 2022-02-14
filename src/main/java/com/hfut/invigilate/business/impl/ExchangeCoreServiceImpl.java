@@ -37,6 +37,44 @@ public class ExchangeCoreServiceImpl implements ExchangeCoreService {
     ExchangeLogService exchangeLogService;
 
     @Override
+    @Transactional
+    public boolean cancelIntend(Integer workId, Long exchangeCode){
+        Exchange exchange = exchangeService.lambdaQuery()
+                .eq(Exchange::getCode, exchangeCode)
+                .eq(Exchange::getResponseWorkId, workId)
+                .one();
+        if(exchange==null){
+            throw new BusinessException("这不是你的合法交换编码");
+        }
+        //删除记录
+        boolean remove = exchangeService.lambdaUpdate()
+                .eq(Exchange::getCode, exchangeCode)
+                .remove();
+        if(!remove){
+            throw new BusinessException("交换记录删除失败");
+        }
+        //更新监考表
+        Long requestInvigilateCode = exchange.getRequestInvigilateCode();
+        boolean subExchangeNum = invigilateService.subExchangeNum(requestInvigilateCode);
+        if(!subExchangeNum){
+            throw new BusinessException("监考交换数量减少失败");
+        }
+        //记录日志
+        ExchangeLog exchangeLog = new ExchangeLog();
+        exchangeLog.setWorkId(workId);
+        exchangeLog.setRequestExamCode(exchange.getRequestExamCode());
+        exchangeLog.setResponseExamCode(exchange.getResponseExamCode());
+        Exam responseExam = examService.getByCode(exchange.getResponseExamCode());
+        Exam requestExam = examService.getByCode(exchange.getRequestExamCode());
+        exchangeLog.setDetail("取消用自己的考试:\t"+responseExam.getSimpleDescription()+"\t和\t"+requestExam.getSimpleDescription()+"\t 进行交换");
+        exchangeLog.setState(ExchangeState.Process);
+        exchangeLog.setExchangeType(ExchangeType.Cancel);
+        exchangeLogService.save(exchangeLog);
+
+        return true;
+    }
+
+    @Override
     public boolean startExchange(Long invigilateCode, String msg, Integer workId) {
         //验证监考
         Invigilate invigilate = invigilateService.lambdaQuery()

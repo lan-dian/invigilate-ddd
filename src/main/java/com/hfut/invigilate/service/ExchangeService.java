@@ -24,4 +24,5 @@ public interface ExchangeService extends IService<Exchange> {
     List<IntendVO> listOtherIntend(Long invigilateCode);
 
     List<InvigilateExchangeVO> listInvigilateExchanges(Integer workId, LocalDate startDate, LocalDate endDate);
+
 }

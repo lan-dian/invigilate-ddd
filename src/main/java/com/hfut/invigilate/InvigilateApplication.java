@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Slf4j
@@ -14,7 +15,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class InvigilateApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(InvigilateApplication.class, args);
+        ConfigurableApplicationContext applicationContext = SpringApplication.run(InvigilateApplication.class, args);
+        System.out.println(applicationContext.getId());
         log.info("http://localhost:8005/doc.html");
     }
 

@@ -8,4 +8,6 @@ public interface ExchangeCoreService {
 
     boolean intend(Integer workId, Long invigilateCode, Long targetCode);
 
+    boolean cancelIntend(Integer workId, Long exchangeCode);
+
 }

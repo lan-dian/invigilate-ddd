@@ -21,6 +21,8 @@ public interface InvigilateService extends IService<Invigilate> {
 
     boolean addExchangeNum(Long code);
 
+    boolean subExchangeNum(Long code);
+
     Invigilate getByCode(Long code);
 
     List<TeacherInvigilateVO> listInvigilate(Integer workId, LocalDate startDate, LocalDate endDate);

@@ -10,6 +10,10 @@
         update invigilate set exchange_num=exchange_num+1 where code=#{code}
     </update>
 
+    <update id="subExchangeNum">
+        update invigilate set exchange_num=exchange_num-1 where code=#{code}
+    </update>
+
     <select id="listInvigilate" resultType="com.hfut.invigilate.model.invigilate.InvigilateBO">
         select EI.name,
         EI.date,

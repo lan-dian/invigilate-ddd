@@ -2,12 +2,14 @@ package com.hfut.invigilate.service.impl;
 
 import com.hfut.invigilate.entity.Exchange;
 import com.hfut.invigilate.mapper.ExchangeMapper;
+import com.hfut.invigilate.model.exception.BusinessException;
 import com.hfut.invigilate.model.exchange.IntendVO;
 import com.hfut.invigilate.model.exchange.InvigilateExchangeVO;
 import com.hfut.invigilate.model.exchange.SelfExchangeIntendVO;
 import com.hfut.invigilate.service.ExchangeService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -37,4 +39,6 @@ public class ExchangeServiceImpl extends ServiceImpl<ExchangeMapper, Exchange> i
     public List<InvigilateExchangeVO> listInvigilateExchanges(Integer workId, LocalDate startDate, LocalDate endDate) {
         return baseMapper.listInvigilateExchanges(workId, startDate, endDate);
     }
+
+
 }
