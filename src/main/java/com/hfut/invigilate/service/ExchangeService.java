@@ -19,6 +19,8 @@ import java.util.List;
  */
 public interface ExchangeService extends IService<Exchange> {
 
+    Exchange getByCode(Long code);
+
     List<SelfExchangeIntendVO> listMyIntend(Integer workId);
 
     List<IntendVO> listOtherIntend(Long invigilateCode);

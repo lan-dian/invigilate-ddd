@@ -16,6 +16,22 @@ spring:
       max-request-size: 50MB
 
 
+knife4j:
+  enable: true
+  basic:
+    enable: true
+    username: webdev403
+    password: webdev403
+  documents:
+    - group: 1.0
+      name: 相关说明文档
+      locations: classpath:markdown/*
+
+
 guardian:
   token:
     private-key: 'hfut-software-lab'
+    header-name: 'token'
+    prefix: ''
+  interceptor:
+    exclude-path-patterns: ["/error","/swagger-resources/**"]

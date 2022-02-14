@@ -89,19 +89,17 @@ public class ExchangeController {
         return result.ok(cancel);
     }
 
-/*
     @GetMapping("/confirm")
     @ApiOperation("确认和哪一个进行交换")
-    public CommonResult confirm(@RequestParam Long exchangeCode) {
-        String workId = userAuthorService.getUserId();
+    public CommonResult<Void> confirm(@RequestParam Long exchangeCode) {
+        CommonResult<Void> result=new CommonResult<>();
 
+        Integer workId = userAuthorService.getUserId();
 
-        ServiceDTO confirm = invigilateService.confirm(exchangeCode, workId);
-        return CommonResult.ok(confirm);
+        boolean confirm = exchangeCoreService.confirm(exchangeCode, workId);
+
+        return result.ok(confirm);
     }
 
-
-
-*/
 
 }

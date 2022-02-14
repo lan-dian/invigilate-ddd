@@ -12,4 +12,6 @@ public interface ExchangeCoreService {
 
     boolean cancelExchange(Integer workId, Long invigilateCode);
 
+    boolean confirm(Long exchangeCode, Integer workId);
+
 }
