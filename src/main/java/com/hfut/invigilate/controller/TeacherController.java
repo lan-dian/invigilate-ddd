@@ -6,6 +6,7 @@ import com.hfut.invigilate.model.commen.CommonResult;
 import com.hfut.invigilate.model.consts.DatePattern;
 import com.hfut.invigilate.model.exam.ExamTeachersVO;
 import com.hfut.invigilate.model.exchange.IntendVO;
+import com.hfut.invigilate.model.exchange.InvigilateExchangeVO;
 import com.hfut.invigilate.model.exchange.SelfExchangeIntendVO;
 import com.hfut.invigilate.model.exchange.WantToBeExchangeInvigilate;
 import com.hfut.invigilate.model.invigilate.TeacherInvigilateVO;
@@ -147,6 +148,31 @@ public class TeacherController {
         List<IntendVO> intendVOS = exchangeService.listOtherIntend(invigilateCode);
 
         return result.body(intendVOS);
+    }
+
+
+    @GetMapping("/list")
+    @ApiOperation("列出其他人的调换申请")
+    public CommonResult<List<InvigilateExchangeVO>> listInvigilateExchange(@RequestParam(required = false) @DateTimeFormat(pattern = DatePattern.DATE) LocalDate startDate,
+                                               @RequestParam(required = false)  @DateTimeFormat(pattern = DatePattern.DATE) LocalDate endDate) {
+        CommonResult<List<InvigilateExchangeVO>> result=new CommonResult<>();
+        Integer workId = userAuthorService.getUserId();
+
+        if(startDate!=null){
+            if(startDate.isBefore(LocalDate.now())){
+                return result.err("开始时间不能早于今天");
+            }
+            if(endDate!=null){
+                if(startDate.isAfter(endDate)){
+                    return result.err("开始时间必须晚于结束时间");
+                }
+            }
+        }else{
+            startDate=LocalDate.now();
+        }
+
+        List<InvigilateExchangeVO> invigilateExchangeVOS = exchangeService.listInvigilateExchanges(workId,startDate,endDate);
+        return result.body(invigilateExchangeVOS);
     }
 
 }

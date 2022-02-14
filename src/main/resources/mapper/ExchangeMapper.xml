@@ -65,5 +65,44 @@
           and r.state = 0
     </select>
 
+    <resultMap id="InvigilateExchange" autoMapping="true"
+               type="com.hfut.invigilate.model.exchange.InvigilateExchangeVO">
+        <id property="invigilateCode" column="invigilate_code"/>
+        <association property="teacher" columnPrefix="teacher_" autoMapping="true">
+            <id property="workId" column="work_id"/>
+        </association>
+        <association property="exam" columnPrefix="exam_" autoMapping="true">
+            <id property="examCode" column="code"/>
+        </association>
+    </resultMap>
+
+    <select id="listInvigilateExchanges" resultMap="InvigilateExchange">
+        select u.work_id as teacher_work_id,
+        u.telephone as teacher_telephone,
+        u.name as teacher_name,
+        e.code as exam_code,
+        e.money as exam_money,
+        e.name as exam_name,
+        e.date as exam_date,
+        e.start_time as exam_start_time,
+        e.end_time as exam_end_time,
+        e.address as exam_address,
+        e.student_num as exam_student_num,
+        i.msg as msg,
+        i.code as invigilate_code
+        from invigilate i
+        inner join exam e on i.exam_code = e.code
+        inner join user u on u.work_id = i.work_id
+        <where>i.exchange_num &gt;= 0
+            and i.work_id != #{workId}
+            <if test="startDate!=null">
+                and e.date &gt;= #{startDate}
+            </if>
+            <if test="endDate!=null">
+                and e.date &lt;= #{endDate}
+            </if>
+        </where>
+    </select>
+
 
 </mapper>
