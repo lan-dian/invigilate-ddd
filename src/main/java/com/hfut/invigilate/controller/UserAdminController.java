@@ -2,6 +2,7 @@ package com.hfut.invigilate.controller;
 
 import com.hfut.invigilate.author.RoleConst;
 import com.hfut.invigilate.author.UserAuthorService;
+import com.hfut.invigilate.entity.User;
 import com.hfut.invigilate.model.commen.CommonResult;
 import com.hfut.invigilate.model.commen.PageDTO;
 import com.hfut.invigilate.model.consts.DatePattern;
@@ -59,7 +60,6 @@ public class UserAdminController {
         PageDTO<UserRolesVO> pageDTO = UserService.page(page, limit, queryDTO);
         return result.body(pageDTO);
     }
-
 
 
 }

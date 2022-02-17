@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.StringJoiner;
 
 
 public class RequestLogDTO {
@@ -48,13 +49,13 @@ public class RequestLogDTO {
             logDTO.name = user.getName();
         }
         //设置参数
-        StringBuilder arg = new StringBuilder();
+        StringJoiner arg = new StringJoiner("\t");
         MethodSignature methodSignature = (MethodSignature) signature;
         String[] parameterNames = methodSignature.getParameterNames();
         Object[] args = point.getArgs();
         for (int i = 0; i < parameterNames.length; i++) {
             String parameterName = parameterNames[i];
-            arg.append(parameterName).append("=").append(JsonUtils.parse(args[i]));
+            arg.add(parameterName+"="+JsonUtils.parse(args[i]));
         }
         logDTO.args=arg.toString();
         logDTO.createTime = LocalDateTime.now();

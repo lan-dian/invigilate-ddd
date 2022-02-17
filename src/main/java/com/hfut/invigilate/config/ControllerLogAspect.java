@@ -10,9 +10,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.boot.web.servlet.ServletComponentScan;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.DispatcherServlet;
+import org.springframework.web.servlet.HandlerExceptionResolver;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
 import javax.annotation.Resource;
+import java.util.logging.Handler;
 
 /**
  * 控制器日志切面
@@ -29,29 +35,9 @@ public class ControllerLogAspect {
     @Around("execution(public * com.hfut.invigilate.controller.*.*(..))")
     public Object doAround(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         RequestLogDTO.clear();
-
         RequestLogDTO.startLog(proceedingJoinPoint);
 
-        Object result=null;
-
-        try {
-            result=proceedingJoinPoint.proceed();
-        }finally {
-            if(result!=null){
-                try {
-                    CommonResult<Object> commonResult = (CommonResult<Object>) result;
-                    RequestLogDTO requestLogDTO = RequestLogDTO.endLog(commonResult);
-                    RequestLog requestLog = RequestLog.convert(requestLogDTO);
-                    requestLogService.save(requestLog);
-                    RequestLogDTO.clear();
-                }catch (Throwable e){
-                    log.warn("日志保存时异常:{}",result);
-                    e.printStackTrace();
-                }
-            }
-        }
-
-       return result;
+        return proceedingJoinPoint.proceed();
     }
 
 

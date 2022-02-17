@@ -26,6 +26,11 @@ knife4j:
     - group: 1.0
       name: 相关说明文档
       locations: classpath:markdown/*
+  setting:
+    enableSwaggerModels: false
+    enableFooter: false
+    enableFooterCustom: true
+    footerCustomContent: HFUT | Copyright  2022-[合肥工业大学软件工程与可视化实验室]
 
 
 guardian:
@@ -34,4 +39,4 @@ guardian:
     header-name: 'token'
     prefix: ''
   interceptor:
-    exclude-path-patterns: ["/error","/swagger-resources/**"]
+    exclude-path-patterns: ["/error","/webjars/**","doc.html"]
