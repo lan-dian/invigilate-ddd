@@ -1,7 +1,12 @@
 package com.hfut.invigilate;
 
 import com.sun.xml.internal.ws.server.AbstractWebServiceContext;
+import org.springframework.aop.aspectj.AspectJAfterAdvice;
+import org.springframework.aop.aspectj.AspectJAfterThrowingAdvice;
 import org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator;
+import org.springframework.aop.framework.adapter.AfterReturningAdviceInterceptor;
+import org.springframework.aop.framework.adapter.MethodBeforeAdviceInterceptor;
+import org.springframework.aop.framework.autoproxy.AbstractAdvisorAutoProxyCreator;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
 import org.springframework.beans.factory.config.*;
@@ -51,7 +56,11 @@ public class Test {
         DefaultListableBeanFactory defaultListableBeanFactory;
         //aop
         AnnotationAwareAspectJAutoProxyCreator annotationAwareAspectJAutoProxyCreator;
-
+        AbstractAdvisorAutoProxyCreator abstractAdvisorAutoProxyCreator;
+        MethodBeforeAdviceInterceptor methodBeforeAdviceInterceptor;
+        AspectJAfterAdvice aspectJAfterAdvice;
+        AfterReturningAdviceInterceptor afterReturningAdviceInterceptor;
+        AspectJAfterThrowingAdvice aspectJAfterThrowingAdvice;
     }
 
 

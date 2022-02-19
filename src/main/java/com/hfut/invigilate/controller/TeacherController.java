@@ -51,8 +51,8 @@ public class TeacherController {
     @RequiredRole(RoleConst.teacher)
     @PostMapping("/v2/invigilate/")
     @ApiOperation(value = "获取监考")
-    public CommonResult<List<TeacherInvigilateVO>> getMyInvigilate(@RequestParam(required = false) @DateTimeFormat(pattern = DatePattern.DATE) LocalDate startDate,
-                                                                   @RequestParam(required = false) @DateTimeFormat(pattern = DatePattern.DATE) LocalDate endDate) {
+    public CommonResult<List<TeacherInvigilateVO>> getMyInvigilate(@RequestParam(required = false) LocalDate startDate,
+                                                                   @RequestParam(required = false) LocalDate endDate) {
         CommonResult<List<TeacherInvigilateVO>> result = new CommonResult<>();
 
         if (startDate != null && endDate != null) {

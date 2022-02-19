@@ -5,6 +5,7 @@ mybatis-plus:
   configuration:
     default-enum-type-handler: org.apache.ibatis.type.EnumOrdinalTypeHandler
 
+
 spring:
   application:
     name: invigilate

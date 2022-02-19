@@ -1,10 +1,8 @@
 package com.hfut.invigilate.controller;
 
 import com.hfut.invigilate.author.UserAuthorService;
-import com.hfut.invigilate.entity.User;
 import com.hfut.invigilate.model.commen.CommonResult;
 import com.hfut.invigilate.model.user.LoginInfoVO;
-import com.hfut.invigilate.test.BeanPost;
 import com.landao.checker.utils.CheckUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -13,7 +11,6 @@ import org.springframework.util.DigestUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import java.util.Locale;
 
 @Api(tags = "公共接口")

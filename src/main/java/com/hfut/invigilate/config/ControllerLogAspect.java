@@ -23,16 +23,12 @@ import java.util.logging.Handler;
 /**
  * 控制器日志切面
  */
-@Slf4j
 @Aspect
 @Component
 public class ControllerLogAspect {
 
-    @Resource
-    private RequestLogService requestLogService;
 
-
-    @Around("execution(public * com.hfut.invigilate.controller.*.*(..))")
+    @Around("execution(public * *..controller.*Controller.*(..))")
     public Object doAround(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         RequestLogDTO.clear();
         RequestLogDTO.startLog(proceedingJoinPoint);

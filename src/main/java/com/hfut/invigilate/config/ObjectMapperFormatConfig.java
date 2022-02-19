@@ -13,6 +13,8 @@ import com.hfut.invigilate.model.consts.DatePattern;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -37,10 +39,54 @@ public class ObjectMapperFormatConfig {
         javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(DatePattern.DATE_TIME)));
         javaTimeModule.addDeserializer(LocalDate.class, new LocalDateDeserializer(DateTimeFormatter.ofPattern(DatePattern.DATE)));
         javaTimeModule.addDeserializer(LocalTime.class, new LocalTimeDeserializer(DateTimeFormatter.ofPattern(DatePattern.TIME)));
-        //Long转换为String防止进度丢失
+        //Long转换为String防止精度丢失
         javaTimeModule.addSerializer(Long.class, ToStringSerializer.instance);
         objectMapper.registerModule(javaTimeModule);
         return objectMapper;
     }
+
+
+    @Bean
+    public Converter<String, LocalDate> localDateConverter() {
+        return new Converter<String, LocalDate>() {
+            @Override
+            public LocalDate convert(String source) {
+                if(StringUtils.hasText(source)){
+                    return LocalDate.parse(source, DateTimeFormatter.ofPattern(DatePattern.DATE));
+                }else {
+                    return null;
+                }
+            }
+        };
+    }
+
+    @Bean
+    public Converter<String, LocalTime> localTimeConverter() {
+        return new Converter<String, LocalTime>() {
+            @Override
+            public LocalTime convert(String source) {
+                if(StringUtils.hasText(source)){
+                    return LocalTime.parse(source, DateTimeFormatter.ofPattern(DatePattern.TIME));
+                }else {
+                    return null;
+                }
+            }
+        };
+    }
+
+    @Bean
+    public Converter<String, LocalDateTime> localDateTimeConverter() {
+        return new Converter<String, LocalDateTime>() {
+            @Override
+            public LocalDateTime convert(String source) {
+                if(StringUtils.hasText(source)){
+                    return LocalDateTime.parse(source, DateTimeFormatter.ofPattern(DatePattern.DATE_TIME));
+                }else {
+                    return null;
+                }
+            }
+        };
+    }
+
 
 }

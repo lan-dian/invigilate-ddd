@@ -8,15 +8,9 @@ import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
-import java.time.format.DateTimeFormatter;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.hfut.invigilate.model.exam.ExamExcel;
 import com.hfut.invigilate.model.exception.BusinessException;
-import com.hfut.invigilate.utils.CodeUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -88,6 +82,23 @@ public class Exam implements Serializable {
     @ApiModelProperty(value = "工资")
     private Integer money;
 
+    @TableField(exist = false)
+    private Integer line;
+
+    public void margeStudentNum(Integer studentNum){
+        if(this.studentNum==null){
+            throw new RuntimeException("内部计算错误");
+        }
+        this.studentNum+=studentNum;
+    }
+
+    public void mergeClassDescription(String classDescription){
+        if(this.classDescription==null){
+            throw new RuntimeException("内部计算错误");
+        }
+        this.classDescription+=","+classDescription;
+    }
+
     public void replaceAble(){
         if(!beforeStart()){
             throw new BusinessException("不能顶替已经开始或者过期的考试");
@@ -127,6 +138,11 @@ public class Exam implements Serializable {
         LocalDate today = LocalDate.now();
         LocalTime time = LocalTime.now();
         return date.isEqual(today) && startTime.isBefore(time) && endTime.isAfter(time);
+    }
+
+    public boolean isConflict(Exam exam){
+        return date.isEqual(exam.date) && address.equals(exam.address)
+                && (startTime.isBefore(exam.endTime) && endTime.isAfter(exam.startTime));
     }
 
 

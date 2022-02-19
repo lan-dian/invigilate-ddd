@@ -3,23 +3,53 @@ package com.hfut.invigilate.config;
 
 import com.hfut.invigilate.model.commen.CommonResult;
 import com.hfut.invigilate.model.exception.BusinessException;
+
 import com.landao.checker.model.collection.IllegalsHolder;
 import com.landao.checker.model.exception.CheckIllegalException;
 import com.landao.guardian.exception.author.UnAuthorizationException;
 import com.landao.guardian.exception.author.UnLoginException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.beans.PropertyEditorSupport;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * 全局异常处理器
  */
 @Slf4j
 @RestControllerAdvice
-@ResponseStatus
 public class GlobalExceptionHandler {
+
+/*    @InitBinder
+    protected void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(LocalDate.class, new PropertyEditorSupport() {
+            @Override
+            public void setAsText(String text) throws IllegalArgumentException {
+                setValue(LocalDate.parse(text, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+            }
+        });
+        binder.registerCustomEditor(LocalDateTime.class, new PropertyEditorSupport() {
+            @Override
+            public void setAsText(String text) throws IllegalArgumentException {
+                setValue(LocalDateTime.parse(text, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+            }
+        });
+        binder.registerCustomEditor(LocalTime.class, new PropertyEditorSupport() {
+            @Override
+            public void setAsText(String text) throws IllegalArgumentException {
+                setValue(LocalTime.parse(text, DateTimeFormatter.ofPattern("HH:mm:ss")));
+            }
+        });
+    }*/
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(value = UnLoginException.class)

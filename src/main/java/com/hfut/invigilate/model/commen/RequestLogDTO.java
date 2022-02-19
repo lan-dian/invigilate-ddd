@@ -2,9 +2,9 @@ package com.hfut.invigilate.model.commen;
 
 
 import com.hfut.invigilate.author.UserTokenBean;
-import com.hfut.invigilate.utils.HfutWebUtils;
 import com.hfut.invigilate.utils.JsonUtils;
 import com.landao.guardian.core.GuardianContext;
+import com.landao.guardian.util.NewxWebUtils;
 import io.swagger.annotations.ApiModelProperty;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -36,7 +36,7 @@ public class RequestLogDTO {
 
     public static void startLog(ProceedingJoinPoint point) {
         RequestLogDTO logDTO = getCurrent();
-        HttpServletRequest request = HfutWebUtils.getRequest();
+        HttpServletRequest request = NewxWebUtils.getRequest();
         //设置请求url
         logDTO.url = request.getRequestURI();
         //设置类名和方法名
@@ -66,7 +66,7 @@ public class RequestLogDTO {
         if (REQUEST_LOG.get()==null) {
             logDTO = new RequestLogDTO();
             logDTO.createTime = LocalDateTime.now();
-            HttpServletRequest request = HfutWebUtils.getRequest();
+            HttpServletRequest request = NewxWebUtils.getRequest();
             logDTO.url = request.getRequestURI();
             logDTO.signature = "认证异常!";
             //设置用户信息
@@ -89,7 +89,7 @@ public class RequestLogDTO {
             data=data.substring(0,60000);
         }
         logDTO.data=data;
-        HttpServletResponse response = HfutWebUtils.getResponse();
+        HttpServletResponse response = NewxWebUtils.getResponse();
         logDTO.status= response.getStatus();
         logDTO.success= logDTO.code == 0;
         return logDTO;
