@@ -2,14 +2,15 @@ package com.hfut.invigilate.controller;
 
 import com.hfut.invigilate.author.RoleConst;
 import com.hfut.invigilate.author.UserAuthorService;
-import com.hfut.invigilate.entity.User;
 import com.hfut.invigilate.model.commen.CommonResult;
 import com.hfut.invigilate.model.commen.PageDTO;
 import com.hfut.invigilate.model.consts.DatePattern;
+import com.hfut.invigilate.model.user.UserAdminVO;
 import com.hfut.invigilate.model.user.UserDepartmentVO;
 import com.hfut.invigilate.model.user.UserPageQueryDTO;
 import com.hfut.invigilate.model.user.UserRolesVO;
 import com.hfut.invigilate.service.UserService;
+import com.landao.checker.annotations.special.group.UpdateCheck;
 import com.landao.guardian.annotations.author.RequiredRole;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,7 +30,7 @@ public class UserAdminController {
     UserAuthorService userAuthorService;
 
     @Resource
-    UserService UserService;
+    UserService userService;
 
 
     @RequiredRole(RoleConst.manager)
@@ -45,7 +46,7 @@ public class UserAdminController {
             startDate=LocalDate.now().minusMonths(1);
         }
 
-        List<UserDepartmentVO> departmentUsers = UserService.getDepartmentUser(departmentId, startDate);
+        List<UserDepartmentVO> departmentUsers = userService.getDepartmentUser(departmentId, startDate);
 
         return result.body(departmentUsers);
     }
@@ -57,8 +58,20 @@ public class UserAdminController {
                                                    @RequestParam(defaultValue = "15") Integer limit,
                                                    @RequestBody(required = false) UserPageQueryDTO queryDTO){
         CommonResult<PageDTO<UserRolesVO>> result=new CommonResult<>();
-        PageDTO<UserRolesVO> pageDTO = UserService.page(page, limit, queryDTO);
+        PageDTO<UserRolesVO> pageDTO = userService.page(page, limit, queryDTO);
         return result.body(pageDTO);
+    }
+
+    @RequiredRole(value ={ RoleConst.manager,RoleConst.admin})
+    @PostMapping("/update")
+    @ApiOperation("修改用户信息(包括角色)")
+    @UpdateCheck
+    public CommonResult<Void> update(@RequestBody UserAdminVO user){
+        CommonResult<Void> result=new CommonResult<>();
+
+        boolean update = userService.update(user);
+
+        return result.ok(update);
     }
 
 

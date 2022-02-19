@@ -1,4 +1,4 @@
-package com.hfut.invigilate.model.exam;
+package com.hfut.invigilate.model.exam.err;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

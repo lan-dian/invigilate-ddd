@@ -8,6 +8,8 @@ import com.hfut.invigilate.business.ExamLoadAssignService;
 import com.hfut.invigilate.model.commen.CommonResult;
 import com.hfut.invigilate.model.commen.PageDTO;
 import com.hfut.invigilate.model.exam.*;
+import com.hfut.invigilate.model.exam.err.ConflictList;
+import com.hfut.invigilate.model.exam.err.ExamConflict;
 import com.hfut.invigilate.service.ExamService;
 import com.landao.guardian.annotations.author.RequiredRole;
 import io.swagger.annotations.Api;
@@ -92,11 +94,11 @@ public class ExamController {
             return result.err("文件读取失败");
         }
 
-        List<ExamConflict> conflicts = examLoadAssignService.loadExam(examExcels);
-        if(conflicts.isEmpty()){
-            return result.ok("成功导入"+examExcels.size()+"条考试信息");
+        ConflictList conflicts = examLoadAssignService.loadExam(examExcels);
+        if(conflicts.size()==0){
+            return result.ok("成功导入"+conflicts.getSuccessCount()+"条考试信息");
         }else {
-            return result.err("成功导入"+(examExcels.size()-conflicts.size())+"条考试信息").setData(conflicts);
+            return result.err("成功导入"+conflicts.getSuccessCount()+"条考试信息").setData(conflicts);
         }
 
         /*List<Department> departments = examExcels.stream()

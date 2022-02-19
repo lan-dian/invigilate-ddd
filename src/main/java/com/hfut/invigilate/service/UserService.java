@@ -3,10 +3,8 @@ package com.hfut.invigilate.service;
 import com.hfut.invigilate.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hfut.invigilate.model.commen.PageDTO;
-import com.hfut.invigilate.model.user.UserDepartmentVO;
-import com.hfut.invigilate.model.user.UserInfoVO;
-import com.hfut.invigilate.model.user.UserPageQueryDTO;
-import com.hfut.invigilate.model.user.UserRolesVO;
+import com.hfut.invigilate.model.user.*;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -22,6 +20,8 @@ import java.util.List;
 public interface UserService extends IService<User> {
 
     PageDTO<UserRolesVO> page(Integer page, Integer limit, UserPageQueryDTO query);
+
+    boolean update(UserAdminVO userAdminVO);
 
     List<UserDepartmentVO> getDepartmentUser(Integer departmentId, LocalDate startDate);
 

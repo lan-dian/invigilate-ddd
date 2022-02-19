@@ -7,7 +7,8 @@ import com.hfut.invigilate.entity.Invigilate;
 import com.hfut.invigilate.model.consts.ConfigConst;
 import com.hfut.invigilate.model.exam.DepartmentExamAssignVO;
 import com.hfut.invigilate.model.exam.ExamAssignVO;
-import com.hfut.invigilate.model.exam.ExamConflict;
+import com.hfut.invigilate.model.exam.err.ConflictList;
+import com.hfut.invigilate.model.exam.err.ExamConflict;
 import com.hfut.invigilate.model.exam.ExamExcel;
 import com.hfut.invigilate.model.exception.BusinessException;
 import com.hfut.invigilate.service.ConfigService;
@@ -49,8 +50,8 @@ public class ExamLoadAssignServiceImpl implements ExamLoadAssignService {
     ConfigService configService;
 
     @Override
-    public List<ExamConflict> loadExam(List<ExamExcel> examExcels) {
-        List<ExamConflict> conflicts = new ArrayList<>();
+    public ConflictList loadExam(List<ExamExcel> examExcels) {
+        ConflictList conflicts = new ConflictList();
 
         if (examExcels.isEmpty()) {
             throw new BusinessException("表格信息不能为空");
@@ -83,9 +84,7 @@ public class ExamLoadAssignServiceImpl implements ExamLoadAssignService {
             //因为existExams的数量一般比exam少
             for (Exam existExam : existExams) {
                 List<Exam> conflictExams = exams.stream().parallel().filter(exam -> !exam.isConflict(existExam)).collect(Collectors.toList());
-                conflictExams.forEach(conflictExam->{
-                    conflicts.add(new ExamConflict(conflictExam.getName(),conflictExam.getLine(),"具有时间冲突:"+existExam.getSimpleDescription()));
-                });
+                conflictExams.forEach(conflictExam-> conflicts.add(conflictExam.getName(),conflictExam.getLine(),"具有时间冲突:"+existExam.getSimpleDescription()));
                 exams.removeAll(conflictExams);
             }
         }
@@ -95,6 +94,7 @@ public class ExamLoadAssignServiceImpl implements ExamLoadAssignService {
             if(!saveBatch){
                 throw new BusinessException("未知原因,保存失败");
             }
+            conflicts.setSuccessCount(exams.size());
         }
 
         return conflicts;
@@ -109,7 +109,7 @@ public class ExamLoadAssignServiceImpl implements ExamLoadAssignService {
     private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
 
-    private List<Exam> convert(List<ExamExcel> examExcels, Map<String, Integer> departments, Integer money, List<ExamConflict> conflicts) {
+    private List<Exam> convert(List<ExamExcel> examExcels, Map<String, Integer> departments, Integer money, ConflictList conflicts) {
         List<Exam> exams = new ArrayList<>(examExcels.size());
         boolean needMarge = false;
         int studentNum = 0;
@@ -134,13 +134,13 @@ public class ExamLoadAssignServiceImpl implements ExamLoadAssignService {
                         throw new BusinessException("日期格式不合法");
                     }
                 } catch (Throwable e) {
-                    conflicts.add(new ExamConflict(exam.getName(), excel.getLine(), "日期格式不合法:" + excel.getExamTime()));
+                    conflicts.add(exam.getName(), excel.getLine(), "日期格式不合法:" + excel.getExamTime());
                     continue;
                 }
 
                 String college = excel.getCollege();
                 if (!departments.containsKey(college)) {
-                    conflicts.add(new ExamConflict(exam.getName(), excel.getLine(), "学院:" + college + "不存在,请先添加"));
+                    conflicts.add(exam.getName(), excel.getLine(), "学院:" + college + "不存在,请先添加");
                     continue;
                 }
 
@@ -154,7 +154,7 @@ public class ExamLoadAssignServiceImpl implements ExamLoadAssignService {
                         throw new BusinessException("考试地点(人数)不合法");
                     }
                 } catch (Throwable e) {
-                    conflicts.add(new ExamConflict(exam.getName(), excel.getLine(), "考试地点(人数)不合法:" + excel.getAddressWithNum()));
+                    conflicts.add(exam.getName(), excel.getLine(), "考试地点(人数)不合法:" + excel.getAddressWithNum());
                     continue;
                 }
 

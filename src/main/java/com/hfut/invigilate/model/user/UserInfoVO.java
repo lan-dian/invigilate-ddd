@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserInfoVO {
 
+    @ApiModelProperty("id")
+    private Long id;
+
     @ApiModelProperty(value = "工号")
     private Integer workId;
 

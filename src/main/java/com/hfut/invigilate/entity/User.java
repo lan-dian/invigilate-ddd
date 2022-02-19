@@ -6,11 +6,15 @@ import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
+
+import com.hfut.invigilate.model.user.UserAdminVO;
+import com.hfut.invigilate.model.user.UserInfoVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.springframework.util.DigestUtils;
 
 /**
  * <p>
@@ -53,6 +57,14 @@ public class User implements Serializable {
     private LocalDateTime updateTime;
 
     private Integer departmentId;
+
+    public void update(UserAdminVO userAdmin){
+        workId=userAdmin.getWorkId();
+        name=userAdmin.getName();
+        telephone=userAdmin.getTelephone();
+        departmentId= userAdmin.getDepartmentId();
+    }
+
 
     /**
      * 校验密码

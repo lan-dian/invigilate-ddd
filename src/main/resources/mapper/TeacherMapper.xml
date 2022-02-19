@@ -91,7 +91,8 @@
     </select>
 
     <select id="getUserInfo" resultType="com.hfut.invigilate.model.user.UserInfoVO">
-        select work_id,
+        select u.id,
+               work_id,
                u.name,
                telephone,
                d.name as department
